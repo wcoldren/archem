@@ -184,7 +184,13 @@ class PokemonEmeraldWorld(World):
                                    "Random.")
             self.hm_requirements["HM03 Surf"] = ["Balance Badge", "Feather Badge"]
 
+        if "No Badges Required" in self.options.hm_requirements.value:
+            for hm in self.hm_requirements:
+                self.hm_requirements[hm] = 0
+
         self.hm_requirements.update(self.options.custom_hm_requirements.value)
+
+        print(self.hm_requirements)
 
         if self.options.badges != RandomizeBadges.option_completely_random:
             if any(

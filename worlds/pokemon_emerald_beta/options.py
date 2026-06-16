@@ -779,11 +779,13 @@ class HmRequirements(OptionSet):
 
     - Fly Without Badge: You can use HM02 Fly even if you have no badges
     - Surf Requires Extra Badge: HM03 Surf requires both the Balance Badge and the Feather Badge
+    - No Badges Required: No HM requires a badge to use outside of battle
     """
     display_name = "HM Requirements"
     valid_keys = [
         "Fly Without Badge",
         "Surf Requires Extra Badge",
+        "No Badges Required",
     ]
     default = []
 
