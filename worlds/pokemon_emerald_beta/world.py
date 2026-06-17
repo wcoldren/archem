@@ -194,8 +194,6 @@ class PokemonEmeraldWorld(World):
 
         self.hm_requirements.update(self.options.custom_hm_requirements.value)
 
-        print(self.hm_requirements)
-
         if self.options.badges != RandomizeBadges.option_completely_random:
             if any(
                 isinstance(req, list) or req > 0
