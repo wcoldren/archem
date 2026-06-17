@@ -303,6 +303,7 @@ class PokemonEmeraldData:
     warps: dict[str, Warp]
     warp_map: dict[str, str | None]
     trainers: list[TrainerData]
+    trainer_map: dict[str, dict]  # TRAINER_<NAME> -> {"map": MAP_<ID>, "rematch": bool}
 
     def __init__(self) -> None:
         self.starters = (277, 280, 283)
@@ -322,6 +323,7 @@ class PokemonEmeraldData:
         self.warps = {}
         self.warp_map = {}
         self.trainers = []
+        self.trainer_map = {}
 
 
 def load_json_data(data_name: str) -> dict[str, Any]:
@@ -337,6 +339,13 @@ def _init() -> None:
     data.constants = extracted_data["constants"]
     data.ram_addresses = extracted_data["misc_ram_addresses"]
     data.rom_addresses = extracted_data["misc_rom_addresses"]
+
+    # Decomp-derived trainer -> map fallback for level scaling (see scaling.py and
+    # data/extract_trainer_maps.py). Optional: missing file leaves the map empty.
+    try:
+        data.trainer_map = load_json_data("trainer_map.json")
+    except FileNotFoundError:
+        data.trainer_map = {}
 
     location_attributes_json = load_json_data("locations.json")
 
