@@ -358,8 +358,11 @@ def write_tokens(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch
     if world.options.wild_pokemon != RandomizeWildPokemon.option_vanilla:
         _set_encounter_tables(world, patch)
 
-    # Set opponent data
-    if world.options.trainer_parties != RandomizeTrainerParties.option_vanilla or easter_egg[0] == 2:
+    # Set opponent data. Also runs when level scaling is on, even with vanilla
+    # parties, since _set_opponents is where scaled trainer levels are written.
+    if (world.options.trainer_parties != RandomizeTrainerParties.option_vanilla
+            or world.options.level_scaling
+            or easter_egg[0] == 2):
         _set_opponents(world, patch, easter_egg)
 
     # Set legendary pokemon
@@ -776,6 +779,10 @@ def _set_opponents(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePat
 
             # Replace species
             patch.write_token(APTokenTypes.WRITE, pokemon_address + 0x04, struct.pack("<H", pokemon.species_id))
+
+            # Replace level (lvl is a u8 at +0x02 in the TrainerMon struct)
+            if world.options.level_scaling:
+                patch.write_token(APTokenTypes.WRITE, pokemon_address + 0x02, struct.pack("<B", pokemon.level))
 
             # Replace custom moves if applicable
             if trainer.party.pokemon_data_type == TrainerPokemonDataTypeEnum.NO_ITEM_CUSTOM_MOVES:

@@ -666,6 +666,64 @@ class MatchTrainerLevelsBonus(Range):
     range_end = 100
     default = 0
 
+class LevelScaling(Choice):
+    """
+    Rescales trainer Pokemon levels based on the logical sphere in which each trainer's region
+    first becomes reachable, so difficulty tracks logical progression depth.
+
+    Cannot be combined with Match Trainer Levels (both adjust trainer levels).
+
+    - Off: Vanilla trainer levels are used.
+    - Spheres: Trainer levels are scaled by logical progression depth.
+    """
+    display_name = "Level Scaling"
+    default = 0
+    option_off = 0
+    option_spheres = 1
+
+
+class LevelScalingCurve(Choice):
+    """
+    When Level Scaling is enabled, the shape of the curve used to distribute trainer levels from
+    the minimum to the maximum across all scaled trainers, ordered by logical progression.
+
+    - Linear: Levels increase at a constant rate from min to max.
+    - Sqrt: Levels rise quickly early then taper off (harder early game, compressed late game).
+    - Quadratic: Levels stay low early then rise steeply (easier early game, steep late game).
+    - S Curve: Slow start, fast middle, slow finish.
+    """
+    display_name = "Level Scaling Curve"
+    default = 1
+    option_linear = 1
+    option_sqrt = 2
+    option_quadratic = 3
+    option_s_curve = 4
+
+
+class LevelScalingMinLevel(Range):
+    """
+    The level assigned to the earliest scaled trainer (the bottom of the Level Scaling curve).
+    Only used when Level Scaling is enabled.
+    """
+    display_name = "Level Scaling Min Level"
+    default = 2
+    range_start = 1
+    range_end = 100
+
+
+class LevelScalingMaxLevel(Range):
+    """
+    The level assigned to the latest scaled trainer (the top of the Level Scaling curve).
+    Only used when Level Scaling is enabled.
+
+    Trainers are scaled to preserve each party's internal level spread, so individual party
+    members may sit slightly above this value.
+    """
+    display_name = "Level Scaling Max Level"
+    default = 65
+    range_start = 1
+    range_end = 100
+
 
 class DoubleBattleChance(Range):
     """
@@ -1013,6 +1071,10 @@ class PokemonEmeraldOptions(PerGameCommonOptions):
     purge_spinners: PurgeSpinners
     match_trainer_levels: MatchTrainerLevels
     match_trainer_levels_bonus: MatchTrainerLevelsBonus
+    level_scaling: LevelScaling
+    level_scaling_curve: LevelScalingCurve
+    level_scaling_min_level: LevelScalingMinLevel
+    level_scaling_max_level: LevelScalingMaxLevel
     double_battle_chance: DoubleBattleChance
     better_shops: BetterShops
 

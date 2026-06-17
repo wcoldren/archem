@@ -12,6 +12,10 @@ use HMs. Read the option description in your template yaml for more info.
 Overflow up to 999 per type of item is put in your PC.
 - Added marine cave and terra cave locations to slot data for trackers, and added new event flags for players
 discovering them at the weather institute.
+- New `level_scaling` option that rescales trainer levels by logical progression depth (the sphere in which each
+trainer's region first becomes reachable), with `level_scaling_curve` (linear/sqrt/quadratic/s-curve) and
+`level_scaling_min_level`/`level_scaling_max_level` controls. Adapted from the Pokémon Crystal Archipelago level
+scaling by cheerioschelsea ("Implement Sphere Based Level Scaling") and James White.
 
 ### Fixes
 

@@ -26,6 +26,7 @@ from .options import (Goal, DarkCavesRequireFlash, HmRequirements, ItemPoolType,
 from .pokemon import (get_random_move, get_species_id_by_label, randomize_abilities, randomize_learnsets,
                       randomize_legendary_encounters, randomize_misc_pokemon, randomize_starters,
                       randomize_tm_hm_compatibility,randomize_types, randomize_wild_encounters)
+from .scaling import perform_level_scaling
 from .rom import PokemonEmeraldProcedurePatch, write_tokens
 from .util import get_encounter_type_label
 
@@ -164,6 +165,9 @@ class PokemonEmeraldWorld(World):
         return "Great Ball"
 
     def generate_early(self) -> None:
+        if self.options.level_scaling and self.options.match_trainer_levels:
+            raise OptionError(f"Pokemon Emerald: Player {self.player} ({self.player_name}) cannot enable both "
+                              "Level Scaling and Match Trainer Levels; both adjust trainer levels and would compound.")
         self.hm_requirements = {
             "HM01 Cut": ["Stone Badge"],
             "HM02 Fly": ["Feather Badge"],
@@ -690,6 +694,9 @@ class PokemonEmeraldWorld(World):
         randomize_misc_pokemon(self)
         randomize_opponent_parties(self)
         randomize_starters(self)
+
+        if self.options.level_scaling:
+            perform_level_scaling(self)
 
         patch = PokemonEmeraldProcedurePatch(player=self.player, player_name=self.player_name)
         write_tokens(self, patch)
