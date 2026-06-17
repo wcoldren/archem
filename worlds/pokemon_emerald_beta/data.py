@@ -147,6 +147,7 @@ class LocationData(NamedTuple):
 class EncounterTableData(NamedTuple):
     slots: list[int]
     address: int
+    scaled_level: int | None = None  # set by level scaling; flattened across all slots
 
 
 class PokemonSource(StrEnum):
@@ -230,6 +231,8 @@ class EvolutionData(NamedTuple):
 class MiscPokemonData(NamedTuple):
     species_id: int
     address: int
+    level: int | None = None  # vanilla level (legendaries only; misc has none in extracted data)
+    scaled_level: int | None = None  # set by level scaling
 
 
 @dataclass
@@ -998,7 +1001,8 @@ def _init() -> None:
     for legendary_encounter_json in extracted_data["legendary_encounters"]:
         data.legendary_encounters.append(MiscPokemonData(
             legendary_encounter_json["species"],
-            legendary_encounter_json["address"]
+            legendary_encounter_json["address"],
+            level=legendary_encounter_json["level"]
         ))
 
     for misc_pokemon_json in extracted_data["misc_pokemon"]:

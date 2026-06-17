@@ -354,8 +354,9 @@ def write_tokens(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch
     # Set species data
     _set_species_info(world, patch, easter_egg)
 
-    # Set encounter tables
-    if world.options.wild_pokemon != RandomizeWildPokemon.option_vanilla:
+    # Set encounter tables. Also runs when level scaling is on, even with vanilla wild
+    # species, since _set_encounter_tables is where scaled wild levels are written.
+    if world.options.wild_pokemon != RandomizeWildPokemon.option_vanilla or world.options.level_scaling:
         _set_encounter_tables(world, patch)
 
     # Set opponent data. Also runs when level scaling is on, even with vanilla
@@ -739,8 +740,13 @@ def _set_encounter_tables(world: PokemonEmeraldWorld, patch: PokemonEmeraldProce
     for map_data in world.modified_maps.values():
         for table in map_data.encounters.values():
             for i, species_id in enumerate(table.slots):
-                address = table.address + 2 + (4 * i)
-                patch.write_token(APTokenTypes.WRITE, address, struct.pack("<H", species_id))
+                slot_address = table.address + (4 * i)
+                patch.write_token(APTokenTypes.WRITE, slot_address + 2, struct.pack("<H", species_id))
+
+                # Level scaling flattens the table to a single level: write it to min and max.
+                if table.scaled_level is not None:
+                    patch.write_token(APTokenTypes.WRITE, slot_address, struct.pack("<B", table.scaled_level))
+                    patch.write_token(APTokenTypes.WRITE, slot_address + 1, struct.pack("<B", table.scaled_level))
 
 
 def _set_species_info(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch, easter_egg: tuple[int, int]) -> None:
@@ -810,8 +816,12 @@ def _set_opponents(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePat
 
 
 def _set_legendary_encounters(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch) -> None:
+    # encounter.address points at the u16 species operand of a setwildbattle/givemon script
+    # command; the battle level is the u8 immediately after it (at address + 2).
     for encounter in world.modified_legendary_encounters:
         patch.write_token(APTokenTypes.WRITE, encounter.address, struct.pack("<H", encounter.species_id))
+        if encounter.scaled_level is not None:
+            patch.write_token(APTokenTypes.WRITE, encounter.address + 2, struct.pack("<B", encounter.scaled_level))
 
 
 def _set_misc_pokemon(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch) -> None:

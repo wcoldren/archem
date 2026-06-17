@@ -668,13 +668,15 @@ class MatchTrainerLevelsBonus(Range):
 
 class LevelScaling(Choice):
     """
-    Rescales trainer Pokemon levels based on the logical sphere in which each trainer's region
-    first becomes reachable, so difficulty tracks logical progression depth.
+    Rescales Pokemon levels based on the logical sphere in which their region first becomes
+    reachable, so difficulty tracks logical progression depth. Applies to trainers and wild
+    encounters; legendary static encounters are scaled by their vanilla level as a progression
+    proxy. (Gift Pokemon are not scaled.)
 
     Cannot be combined with Match Trainer Levels (both adjust trainer levels).
 
-    - Off: Vanilla trainer levels are used.
-    - Spheres: Trainer levels are scaled by logical progression depth.
+    - Off: Vanilla levels are used.
+    - Spheres: Levels are scaled by logical progression depth.
     """
     display_name = "Level Scaling"
     default = 0
