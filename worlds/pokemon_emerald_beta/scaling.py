@@ -89,11 +89,16 @@ def _build_trainer_region_map(world: "PokemonEmeraldWorld") -> dict[int, str]:
     """
     trainer index in world.modified_trainers -> parent region name.
 
-    The only source of a trainer's region is its TRAINER_<NAME>_REWARD location. The six
-    Route-103-style rival battles are merged in data.py into a single canonical location
-    keyed on the BRENDAN ..._MUDKIP variant, so the other five variant trainers (the one the
-    player actually fights depends on gender + starter) would otherwise be unmapped. Map all
-    sibling variants to the same region so whichever rival is fought gets scaled.
+    Primary source: each trainer's TRAINER_<NAME>_REWARD location (sub-region accurate). The six
+    Route-103-style rival battles are merged in data.py into a single canonical location keyed on
+    the BRENDAN ..._MUDKIP variant, so the other five variant trainers (the one the player
+    actually fights depends on gender + starter) would otherwise be unmapped. Map all sibling
+    variants to the same region so whichever rival is fought gets scaled.
+
+    Fallback source: the decomp-derived trainer->map table (data.trainer_map, see
+    data/extract_trainer_maps.py) covers trainers with no reward location (scripted specials,
+    multi-map grunts, etc.). Rematches are excluded by default, matching Pokemon Crystal; true
+    Match Call rematches carry no decomp battle label and so never appear in the table regardless.
     """
     trainer_region: dict[int, str] = {}
     for loc_name, loc_data in data.locations.items():
@@ -118,6 +123,35 @@ def _build_trainer_region_map(world: "PokemonEmeraldWorld") -> dict[int, str]:
                 sibling_idx = data.constants.get(sibling)
                 if sibling_idx is not None:
                     trainer_region[sibling_idx] = loc_data.parent_region
+
+    # Fallback: fill trainers still unmapped from the decomp trainer->map table.
+    if data.trainer_map:
+        map_to_regions: dict[str, list[str]] = {}
+        for region_name, region_data in data.regions.items():
+            parent_map = getattr(region_data, "parent_map", None)
+            if parent_map is not None:
+                map_to_regions.setdefault(parent_map.name, []).append(region_name)
+
+        def _representative_region(map_id: str) -> "str | None":
+            # Sub-region sphere differences within one map are 0-1, so a representative region
+            # suffices: prefer the map's main region, else the lexicographically-first region.
+            regions = sorted(map_to_regions.get(map_id, []))
+            if not regions:
+                return None  # map has no AP region (cut/unused) -> leave trainer vanilla
+            for region in regions:
+                if region.endswith("/MAIN"):
+                    return region
+            return regions[0]
+
+        for trainer_const, entry in data.trainer_map.items():
+            if entry.get("rematch"):  # excluded by default; future opt-in flips this guard
+                continue
+            idx = data.constants.get(trainer_const)
+            if idx is None or idx in trainer_region:
+                continue
+            region = _representative_region(entry["map"])
+            if region is not None:
+                trainer_region[idx] = region
 
     return trainer_region
 

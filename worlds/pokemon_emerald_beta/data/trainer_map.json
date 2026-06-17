@@ -1,0 +1,2062 @@
+{
+ "TRAINER_AARON": {
+  "map": "MAP_ROUTE134",
+  "rematch": false
+ },
+ "TRAINER_ABIGAIL_1": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_AIDAN": {
+  "map": "MAP_ROUTE127",
+  "rematch": false
+ },
+ "TRAINER_AISHA": {
+  "map": "MAP_ROUTE117",
+  "rematch": false
+ },
+ "TRAINER_ALAN": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE3",
+  "rematch": false
+ },
+ "TRAINER_ALBERT": {
+  "map": "MAP_VICTORY_ROAD_1F",
+  "rematch": false
+ },
+ "TRAINER_ALBERTO": {
+  "map": "MAP_ROUTE123",
+  "rematch": false
+ },
+ "TRAINER_ALEX": {
+  "map": "MAP_ROUTE134",
+  "rematch": false
+ },
+ "TRAINER_ALEXA": {
+  "map": "MAP_ROUTE128",
+  "rematch": false
+ },
+ "TRAINER_ALEXIA": {
+  "map": "MAP_PETALBURG_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_ALEXIS": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE7",
+  "rematch": false
+ },
+ "TRAINER_ALICE": {
+  "map": "MAP_ROUTE109",
+  "rematch": false
+ },
+ "TRAINER_ALIX": {
+  "map": "MAP_ROUTE115",
+  "rematch": false
+ },
+ "TRAINER_ALLEN": {
+  "map": "MAP_ROUTE102",
+  "rematch": false
+ },
+ "TRAINER_ALLISON": {
+  "map": "MAP_ROUTE129",
+  "rematch": false
+ },
+ "TRAINER_ALVARO": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE7",
+  "rematch": false
+ },
+ "TRAINER_ALYSSA": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_ANDREA": {
+  "map": "MAP_SOOTOPOLIS_CITY_GYM_B1F",
+  "rematch": false
+ },
+ "TRAINER_ANDRES_1": {
+  "map": "MAP_ROUTE105",
+  "rematch": false
+ },
+ "TRAINER_ANDREW": {
+  "map": "MAP_ROUTE103",
+  "rematch": false
+ },
+ "TRAINER_ANGELICA": {
+  "map": "MAP_ROUTE120",
+  "rematch": false
+ },
+ "TRAINER_ANGELINA": {
+  "map": "MAP_ROUTE114",
+  "rematch": false
+ },
+ "TRAINER_ANGELO": {
+  "map": "MAP_MAUVILLE_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_ANNIKA": {
+  "map": "MAP_SOOTOPOLIS_CITY_GYM_B1F",
+  "rematch": false
+ },
+ "TRAINER_ANTHONY": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_ARCHIE": {
+  "map": "MAP_SEAFLOOR_CAVERN_ROOM9",
+  "rematch": false
+ },
+ "TRAINER_ASHLEY": {
+  "map": "MAP_FORTREE_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_ATHENA": {
+  "map": "MAP_ROUTE127",
+  "rematch": false
+ },
+ "TRAINER_ATSUSHI": {
+  "map": "MAP_MT_PYRE_4F",
+  "rematch": false
+ },
+ "TRAINER_AURON": {
+  "map": "MAP_ROUTE125",
+  "rematch": false
+ },
+ "TRAINER_AUSTINA": {
+  "map": "MAP_ROUTE109",
+  "rematch": false
+ },
+ "TRAINER_AUTUMN": {
+  "map": "MAP_JAGGED_PASS",
+  "rematch": false
+ },
+ "TRAINER_AXLE": {
+  "map": "MAP_LAVARIDGE_TOWN_GYM_1F",
+  "rematch": false
+ },
+ "TRAINER_BARNY": {
+  "map": "MAP_ROUTE118",
+  "rematch": false
+ },
+ "TRAINER_BARRY": {
+  "map": "MAP_ROUTE126",
+  "rematch": false
+ },
+ "TRAINER_BEAU": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_BECK": {
+  "map": "MAP_ROUTE133",
+  "rematch": false
+ },
+ "TRAINER_BECKY": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_BEN": {
+  "map": "MAP_MAUVILLE_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_BENJAMIN_1": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_BENNY": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE6",
+  "rematch": false
+ },
+ "TRAINER_BERKE": {
+  "map": "MAP_PETALBURG_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_BERNIE_1": {
+  "map": "MAP_ROUTE114",
+  "rematch": false
+ },
+ "TRAINER_BETH": {
+  "map": "MAP_ROUTE107",
+  "rematch": false
+ },
+ "TRAINER_BETHANY": {
+  "map": "MAP_SOOTOPOLIS_CITY_GYM_B1F",
+  "rematch": false
+ },
+ "TRAINER_BEVERLY": {
+  "map": "MAP_ROUTE105",
+  "rematch": false
+ },
+ "TRAINER_BIANCA": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_BILLY": {
+  "map": "MAP_ROUTE104",
+  "rematch": false
+ },
+ "TRAINER_BLAKE": {
+  "map": "MAP_MOSSDEEP_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_BRANDEN": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_BRANDI": {
+  "map": "MAP_ROUTE117",
+  "rematch": false
+ },
+ "TRAINER_BRAWLY_1": {
+  "map": "MAP_DEWFORD_TOWN_GYM",
+  "rematch": false
+ },
+ "TRAINER_BRAXTON": {
+  "map": "MAP_ROUTE123",
+  "rematch": false
+ },
+ "TRAINER_BRENDA": {
+  "map": "MAP_ROUTE126",
+  "rematch": false
+ },
+ "TRAINER_BRENDAN_LILYCOVE_MUDKIP": {
+  "map": "MAP_LILYCOVE_CITY",
+  "rematch": false
+ },
+ "TRAINER_BRENDAN_LILYCOVE_TORCHIC": {
+  "map": "MAP_LILYCOVE_CITY",
+  "rematch": false
+ },
+ "TRAINER_BRENDAN_LILYCOVE_TREECKO": {
+  "map": "MAP_LILYCOVE_CITY",
+  "rematch": false
+ },
+ "TRAINER_BRENDAN_ROUTE_103_MUDKIP": {
+  "map": "MAP_ROUTE103",
+  "rematch": false
+ },
+ "TRAINER_BRENDAN_ROUTE_103_TORCHIC": {
+  "map": "MAP_ROUTE103",
+  "rematch": false
+ },
+ "TRAINER_BRENDAN_ROUTE_103_TREECKO": {
+  "map": "MAP_ROUTE103",
+  "rematch": false
+ },
+ "TRAINER_BRENDAN_ROUTE_110_MUDKIP": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_BRENDAN_ROUTE_110_TORCHIC": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_BRENDAN_ROUTE_110_TREECKO": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_BRENDAN_ROUTE_119_MUDKIP": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_BRENDAN_ROUTE_119_TORCHIC": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_BRENDAN_ROUTE_119_TREECKO": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_BRENDAN_RUSTBORO_MUDKIP": {
+  "map": "MAP_RUSTBORO_CITY",
+  "rematch": false
+ },
+ "TRAINER_BRENDAN_RUSTBORO_TORCHIC": {
+  "map": "MAP_RUSTBORO_CITY",
+  "rematch": false
+ },
+ "TRAINER_BRENDAN_RUSTBORO_TREECKO": {
+  "map": "MAP_RUSTBORO_CITY",
+  "rematch": false
+ },
+ "TRAINER_BRENDEN": {
+  "map": "MAP_DEWFORD_TOWN_GYM",
+  "rematch": false
+ },
+ "TRAINER_BRENT": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_BRIANNA": {
+  "map": "MAP_SOOTOPOLIS_CITY_GYM_B1F",
+  "rematch": false
+ },
+ "TRAINER_BRICE": {
+  "map": "MAP_ROUTE112",
+  "rematch": false
+ },
+ "TRAINER_BRIDGET": {
+  "map": "MAP_SOOTOPOLIS_CITY_GYM_B1F",
+  "rematch": false
+ },
+ "TRAINER_BROOKE_1": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_BRYAN": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_BRYANT": {
+  "map": "MAP_ROUTE112",
+  "rematch": false
+ },
+ "TRAINER_CALE": {
+  "map": "MAP_ROUTE121",
+  "rematch": false
+ },
+ "TRAINER_CALLIE": {
+  "map": "MAP_ROUTE120",
+  "rematch": false
+ },
+ "TRAINER_CALVIN_1": {
+  "map": "MAP_ROUTE102",
+  "rematch": false
+ },
+ "TRAINER_CAMDEN": {
+  "map": "MAP_ROUTE127",
+  "rematch": false
+ },
+ "TRAINER_CAMERON_1": {
+  "map": "MAP_ROUTE123",
+  "rematch": false
+ },
+ "TRAINER_CAMRON": {
+  "map": "MAP_ROUTE107",
+  "rematch": false
+ },
+ "TRAINER_CARLEE": {
+  "map": "MAP_ROUTE128",
+  "rematch": false
+ },
+ "TRAINER_CAROL": {
+  "map": "MAP_ROUTE112",
+  "rematch": false
+ },
+ "TRAINER_CAROLINA": {
+  "map": "MAP_ROUTE108",
+  "rematch": false
+ },
+ "TRAINER_CAROLINE": {
+  "map": "MAP_VICTORY_ROAD_B2F",
+  "rematch": false
+ },
+ "TRAINER_CARTER": {
+  "map": "MAP_ROUTE109",
+  "rematch": false
+ },
+ "TRAINER_CATHERINE_1": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_CEDRIC": {
+  "map": "MAP_MT_PYRE_6F",
+  "rematch": false
+ },
+ "TRAINER_CELIA": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_CELINA": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_CHAD": {
+  "map": "MAP_ROUTE124",
+  "rematch": false
+ },
+ "TRAINER_CHANDLER": {
+  "map": "MAP_ROUTE109",
+  "rematch": false
+ },
+ "TRAINER_CHARLIE": {
+  "map": "MAP_ABANDONED_SHIP_CORRIDORS_1F",
+  "rematch": false
+ },
+ "TRAINER_CHARLOTTE": {
+  "map": "MAP_ROUTE114",
+  "rematch": false
+ },
+ "TRAINER_CHASE": {
+  "map": "MAP_ROUTE129",
+  "rematch": false
+ },
+ "TRAINER_CHESTER": {
+  "map": "MAP_ROUTE118",
+  "rematch": false
+ },
+ "TRAINER_CHIP": {
+  "map": "MAP_ROUTE120",
+  "rematch": false
+ },
+ "TRAINER_CHRIS": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_CINDY_1": {
+  "map": "MAP_ROUTE104",
+  "rematch": false
+ },
+ "TRAINER_CLARENCE": {
+  "map": "MAP_ROUTE129",
+  "rematch": false
+ },
+ "TRAINER_CLARISSA": {
+  "map": "MAP_ROUTE120",
+  "rematch": false
+ },
+ "TRAINER_CLARK": {
+  "map": "MAP_ROUTE116",
+  "rematch": false
+ },
+ "TRAINER_CLAUDE": {
+  "map": "MAP_ROUTE114",
+  "rematch": false
+ },
+ "TRAINER_CLIFFORD": {
+  "map": "MAP_MOSSDEEP_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_COBY": {
+  "map": "MAP_ROUTE113",
+  "rematch": false
+ },
+ "TRAINER_COLE": {
+  "map": "MAP_LAVARIDGE_TOWN_GYM_1F",
+  "rematch": false
+ },
+ "TRAINER_COLIN": {
+  "map": "MAP_ROUTE120",
+  "rematch": false
+ },
+ "TRAINER_COLTON": {
+  "map": "MAP_SS_TIDAL_ROOMS",
+  "rematch": false
+ },
+ "TRAINER_CONNIE": {
+  "map": "MAP_SOOTOPOLIS_CITY_GYM_B1F",
+  "rematch": false
+ },
+ "TRAINER_CONOR": {
+  "map": "MAP_ROUTE133",
+  "rematch": false
+ },
+ "TRAINER_CORA": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE4",
+  "rematch": false
+ },
+ "TRAINER_CORY_1": {
+  "map": "MAP_ROUTE108",
+  "rematch": false
+ },
+ "TRAINER_CRISSY": {
+  "map": "MAP_SOOTOPOLIS_CITY_GYM_B1F",
+  "rematch": false
+ },
+ "TRAINER_CRISTIAN": {
+  "map": "MAP_DEWFORD_TOWN_GYM",
+  "rematch": false
+ },
+ "TRAINER_CRISTIN_1": {
+  "map": "MAP_ROUTE121",
+  "rematch": false
+ },
+ "TRAINER_CYNDY_1": {
+  "map": "MAP_ROUTE115",
+  "rematch": false
+ },
+ "TRAINER_DAISUKE": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_DAISY": {
+  "map": "MAP_ROUTE103",
+  "rematch": false
+ },
+ "TRAINER_DALE": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_DALTON_1": {
+  "map": "MAP_ROUTE118",
+  "rematch": false
+ },
+ "TRAINER_DANA": {
+  "map": "MAP_ROUTE132",
+  "rematch": false
+ },
+ "TRAINER_DANIELLE": {
+  "map": "MAP_LAVARIDGE_TOWN_GYM_1F",
+  "rematch": false
+ },
+ "TRAINER_DAPHNE": {
+  "map": "MAP_SOOTOPOLIS_CITY_GYM_B1F",
+  "rematch": false
+ },
+ "TRAINER_DARCY": {
+  "map": "MAP_ROUTE132",
+  "rematch": false
+ },
+ "TRAINER_DARIAN": {
+  "map": "MAP_ROUTE104",
+  "rematch": false
+ },
+ "TRAINER_DARIUS": {
+  "map": "MAP_FORTREE_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_DARRIN": {
+  "map": "MAP_ROUTE107",
+  "rematch": false
+ },
+ "TRAINER_DAVID": {
+  "map": "MAP_ROUTE109",
+  "rematch": false
+ },
+ "TRAINER_DAVIS": {
+  "map": "MAP_ROUTE123",
+  "rematch": false
+ },
+ "TRAINER_DAWSON": {
+  "map": "MAP_ROUTE116",
+  "rematch": false
+ },
+ "TRAINER_DAYTON": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_DEAN": {
+  "map": "MAP_ROUTE126",
+  "rematch": false
+ },
+ "TRAINER_DEANDRE": {
+  "map": "MAP_ROUTE118",
+  "rematch": false
+ },
+ "TRAINER_DEBRA": {
+  "map": "MAP_ROUTE133",
+  "rematch": false
+ },
+ "TRAINER_DECLAN": {
+  "map": "MAP_ROUTE124",
+  "rematch": false
+ },
+ "TRAINER_DEMETRIUS": {
+  "map": "MAP_ABANDONED_SHIP_ROOMS_1F",
+  "rematch": false
+ },
+ "TRAINER_DENISE": {
+  "map": "MAP_ROUTE107",
+  "rematch": false
+ },
+ "TRAINER_DEREK": {
+  "map": "MAP_ROUTE117",
+  "rematch": false
+ },
+ "TRAINER_DEVAN": {
+  "map": "MAP_ROUTE116",
+  "rematch": false
+ },
+ "TRAINER_DIANA_1": {
+  "map": "MAP_JAGGED_PASS",
+  "rematch": false
+ },
+ "TRAINER_DIANNE": {
+  "map": "MAP_VICTORY_ROAD_B2F",
+  "rematch": false
+ },
+ "TRAINER_DILLON": {
+  "map": "MAP_ROUTE113",
+  "rematch": false
+ },
+ "TRAINER_DOMINIK": {
+  "map": "MAP_ROUTE105",
+  "rematch": false
+ },
+ "TRAINER_DONALD": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_DONNY": {
+  "map": "MAP_ROUTE127",
+  "rematch": false
+ },
+ "TRAINER_DOUG": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_DOUGLAS": {
+  "map": "MAP_ROUTE106",
+  "rematch": false
+ },
+ "TRAINER_DRAKE": {
+  "map": "MAP_EVER_GRANDE_CITY_DRAKES_ROOM",
+  "rematch": false
+ },
+ "TRAINER_DREW": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_DUNCAN": {
+  "map": "MAP_ABANDONED_SHIP_CORRIDORS_B1F",
+  "rematch": false
+ },
+ "TRAINER_DUSTY_1": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_DWAYNE": {
+  "map": "MAP_ROUTE109_SEASHORE_HOUSE",
+  "rematch": false
+ },
+ "TRAINER_DYLAN_1": {
+  "map": "MAP_ROUTE117",
+  "rematch": false
+ },
+ "TRAINER_ED": {
+  "map": "MAP_ROUTE123",
+  "rematch": false
+ },
+ "TRAINER_EDDIE": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE1",
+  "rematch": false
+ },
+ "TRAINER_EDGAR": {
+  "map": "MAP_VICTORY_ROAD_1F",
+  "rematch": false
+ },
+ "TRAINER_EDMOND": {
+  "map": "MAP_ROUTE109",
+  "rematch": false
+ },
+ "TRAINER_EDWARD": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_EDWARDO": {
+  "map": "MAP_FORTREE_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_EDWIN_1": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_ELI": {
+  "map": "MAP_LAVARIDGE_TOWN_GYM_1F",
+  "rematch": false
+ },
+ "TRAINER_ELIJAH": {
+  "map": "MAP_ROUTE109",
+  "rematch": false
+ },
+ "TRAINER_ELLIOT_1": {
+  "map": "MAP_ROUTE106",
+  "rematch": false
+ },
+ "TRAINER_ERIC": {
+  "map": "MAP_JAGGED_PASS",
+  "rematch": false
+ },
+ "TRAINER_ERNEST_1": {
+  "map": "MAP_ROUTE125",
+  "rematch": false
+ },
+ "TRAINER_ETHAN_1": {
+  "map": "MAP_JAGGED_PASS",
+  "rematch": false
+ },
+ "TRAINER_FABIAN": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_FELIX": {
+  "map": "MAP_VICTORY_ROAD_B2F",
+  "rematch": false
+ },
+ "TRAINER_FERNANDO_1": {
+  "map": "MAP_ROUTE123",
+  "rematch": false
+ },
+ "TRAINER_FLANNERY_1": {
+  "map": "MAP_LAVARIDGE_TOWN_GYM_1F",
+  "rematch": false
+ },
+ "TRAINER_FLINT": {
+  "map": "MAP_FORTREE_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_FOSTER": {
+  "map": "MAP_ROUTE105",
+  "rematch": false
+ },
+ "TRAINER_FRANKLIN": {
+  "map": "MAP_ROUTE133",
+  "rematch": false
+ },
+ "TRAINER_FREDRICK": {
+  "map": "MAP_ROUTE123",
+  "rematch": false
+ },
+ "TRAINER_GABRIELLE_1": {
+  "map": "MAP_MT_PYRE_3F",
+  "rematch": false
+ },
+ "TRAINER_GARRET": {
+  "map": "MAP_SS_TIDAL_ROOMS",
+  "rematch": false
+ },
+ "TRAINER_GARRISON": {
+  "map": "MAP_ABANDONED_SHIP_ROOMS2_1F",
+  "rematch": false
+ },
+ "TRAINER_GEORGE": {
+  "map": "MAP_PETALBURG_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_GEORGIA": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE2",
+  "rematch": false
+ },
+ "TRAINER_GERALD": {
+  "map": "MAP_LAVARIDGE_TOWN_GYM_1F",
+  "rematch": false
+ },
+ "TRAINER_GILBERT": {
+  "map": "MAP_ROUTE132",
+  "rematch": false
+ },
+ "TRAINER_GLACIA": {
+  "map": "MAP_EVER_GRANDE_CITY_GLACIAS_ROOM",
+  "rematch": false
+ },
+ "TRAINER_GRACE": {
+  "map": "MAP_ROUTE124",
+  "rematch": false
+ },
+ "TRAINER_GREG": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_AQUA_HIDEOUT_1": {
+  "map": "MAP_AQUA_HIDEOUT_1F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_AQUA_HIDEOUT_2": {
+  "map": "MAP_AQUA_HIDEOUT_B1F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_AQUA_HIDEOUT_3": {
+  "map": "MAP_AQUA_HIDEOUT_B1F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_AQUA_HIDEOUT_4": {
+  "map": "MAP_AQUA_HIDEOUT_B2F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_AQUA_HIDEOUT_5": {
+  "map": "MAP_AQUA_HIDEOUT_B1F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_AQUA_HIDEOUT_6": {
+  "map": "MAP_AQUA_HIDEOUT_B2F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_AQUA_HIDEOUT_7": {
+  "map": "MAP_AQUA_HIDEOUT_B1F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_AQUA_HIDEOUT_8": {
+  "map": "MAP_AQUA_HIDEOUT_B2F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_JAGGED_PASS": {
+  "map": "MAP_JAGGED_PASS",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MAGMA_HIDEOUT_1": {
+  "map": "MAP_MAGMA_HIDEOUT_1F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MAGMA_HIDEOUT_10": {
+  "map": "MAP_MAGMA_HIDEOUT_3F_2R",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MAGMA_HIDEOUT_11": {
+  "map": "MAP_MAGMA_HIDEOUT_4F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MAGMA_HIDEOUT_12": {
+  "map": "MAP_MAGMA_HIDEOUT_4F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MAGMA_HIDEOUT_13": {
+  "map": "MAP_MAGMA_HIDEOUT_4F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MAGMA_HIDEOUT_14": {
+  "map": "MAP_MAGMA_HIDEOUT_2F_1R",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MAGMA_HIDEOUT_15": {
+  "map": "MAP_MAGMA_HIDEOUT_2F_2R",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MAGMA_HIDEOUT_16": {
+  "map": "MAP_MAGMA_HIDEOUT_3F_1R",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MAGMA_HIDEOUT_2": {
+  "map": "MAP_MAGMA_HIDEOUT_1F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MAGMA_HIDEOUT_3": {
+  "map": "MAP_MAGMA_HIDEOUT_2F_1R",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MAGMA_HIDEOUT_4": {
+  "map": "MAP_MAGMA_HIDEOUT_2F_1R",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MAGMA_HIDEOUT_5": {
+  "map": "MAP_MAGMA_HIDEOUT_2F_1R",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MAGMA_HIDEOUT_6": {
+  "map": "MAP_MAGMA_HIDEOUT_2F_2R",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MAGMA_HIDEOUT_7": {
+  "map": "MAP_MAGMA_HIDEOUT_2F_2R",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MAGMA_HIDEOUT_8": {
+  "map": "MAP_MAGMA_HIDEOUT_2F_2R",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MAGMA_HIDEOUT_9": {
+  "map": "MAP_MAGMA_HIDEOUT_3F_1R",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MT_CHIMNEY_1": {
+  "map": "MAP_MT_CHIMNEY",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MT_CHIMNEY_2": {
+  "map": "MAP_MT_CHIMNEY",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MT_PYRE_1": {
+  "map": "MAP_MT_PYRE_SUMMIT",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MT_PYRE_2": {
+  "map": "MAP_MT_PYRE_SUMMIT",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MT_PYRE_3": {
+  "map": "MAP_MT_PYRE_SUMMIT",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MT_PYRE_4": {
+  "map": "MAP_MT_PYRE_SUMMIT",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MUSEUM_1": {
+  "map": "MAP_SLATEPORT_CITY_OCEANIC_MUSEUM_2F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_MUSEUM_2": {
+  "map": "MAP_SLATEPORT_CITY_OCEANIC_MUSEUM_2F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_SEAFLOOR_CAVERN_1": {
+  "map": "MAP_SEAFLOOR_CAVERN_ROOM1",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_SEAFLOOR_CAVERN_2": {
+  "map": "MAP_SEAFLOOR_CAVERN_ROOM1",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_SEAFLOOR_CAVERN_3": {
+  "map": "MAP_SEAFLOOR_CAVERN_ROOM4",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_SEAFLOOR_CAVERN_4": {
+  "map": "MAP_SEAFLOOR_CAVERN_ROOM4",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_SEAFLOOR_CAVERN_5": {
+  "map": "MAP_SEAFLOOR_CAVERN_ROOM3",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_SPACE_CENTER_1": {
+  "map": "MAP_MOSSDEEP_CITY_SPACE_CENTER_1F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_SPACE_CENTER_2": {
+  "map": "MAP_MOSSDEEP_CITY_SPACE_CENTER_1F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_SPACE_CENTER_3": {
+  "map": "MAP_MOSSDEEP_CITY_SPACE_CENTER_1F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_SPACE_CENTER_4": {
+  "map": "MAP_MOSSDEEP_CITY_SPACE_CENTER_1F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_SPACE_CENTER_5": {
+  "map": "MAP_MOSSDEEP_CITY_SPACE_CENTER_2F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_SPACE_CENTER_6": {
+  "map": "MAP_MOSSDEEP_CITY_SPACE_CENTER_2F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_SPACE_CENTER_7": {
+  "map": "MAP_MOSSDEEP_CITY_SPACE_CENTER_2F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_WEATHER_INST_1": {
+  "map": "MAP_ROUTE119_WEATHER_INSTITUTE_1F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_WEATHER_INST_2": {
+  "map": "MAP_ROUTE119_WEATHER_INSTITUTE_2F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_WEATHER_INST_3": {
+  "map": "MAP_ROUTE119_WEATHER_INSTITUTE_2F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_WEATHER_INST_4": {
+  "map": "MAP_ROUTE119_WEATHER_INSTITUTE_1F",
+  "rematch": false
+ },
+ "TRAINER_GRUNT_WEATHER_INST_5": {
+  "map": "MAP_ROUTE119_WEATHER_INSTITUTE_2F",
+  "rematch": false
+ },
+ "TRAINER_GWEN": {
+  "map": "MAP_ROUTE109",
+  "rematch": false
+ },
+ "TRAINER_HAILEY": {
+  "map": "MAP_ROUTE109",
+  "rematch": false
+ },
+ "TRAINER_HALEY_1": {
+  "map": "MAP_ROUTE104",
+  "rematch": false
+ },
+ "TRAINER_HALLE": {
+  "map": "MAP_VICTORY_ROAD_B1F",
+  "rematch": false
+ },
+ "TRAINER_HANNAH": {
+  "map": "MAP_MOSSDEEP_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_HARRISON": {
+  "map": "MAP_ROUTE128",
+  "rematch": false
+ },
+ "TRAINER_HAYDEN": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_HECTOR": {
+  "map": "MAP_ROUTE115",
+  "rematch": false
+ },
+ "TRAINER_HEIDI": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_HELENE": {
+  "map": "MAP_ROUTE115",
+  "rematch": false
+ },
+ "TRAINER_HENRY": {
+  "map": "MAP_ROUTE127",
+  "rematch": false
+ },
+ "TRAINER_HERMAN": {
+  "map": "MAP_ROUTE131",
+  "rematch": false
+ },
+ "TRAINER_HIDEO": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_HITOSHI": {
+  "map": "MAP_ROUTE134",
+  "rematch": false
+ },
+ "TRAINER_HOPE": {
+  "map": "MAP_VICTORY_ROAD_1F",
+  "rematch": false
+ },
+ "TRAINER_HUDSON": {
+  "map": "MAP_ROUTE134",
+  "rematch": false
+ },
+ "TRAINER_HUEY": {
+  "map": "MAP_ROUTE109",
+  "rematch": false
+ },
+ "TRAINER_HUGH": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_HUMBERTO": {
+  "map": "MAP_FORTREE_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_IMANI": {
+  "map": "MAP_ROUTE105",
+  "rematch": false
+ },
+ "TRAINER_IRENE": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_ISAAC_1": {
+  "map": "MAP_ROUTE117",
+  "rematch": false
+ },
+ "TRAINER_ISABELLA": {
+  "map": "MAP_ROUTE124",
+  "rematch": false
+ },
+ "TRAINER_ISABELLE": {
+  "map": "MAP_ROUTE103",
+  "rematch": false
+ },
+ "TRAINER_ISABEL_1": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_ISAIAH_1": {
+  "map": "MAP_ROUTE128",
+  "rematch": false
+ },
+ "TRAINER_ISOBEL": {
+  "map": "MAP_ROUTE126",
+  "rematch": false
+ },
+ "TRAINER_IVAN": {
+  "map": "MAP_ROUTE104",
+  "rematch": false
+ },
+ "TRAINER_JACE": {
+  "map": "MAP_LAVARIDGE_TOWN_GYM_1F",
+  "rematch": false
+ },
+ "TRAINER_JACK": {
+  "map": "MAP_ROUTE134",
+  "rematch": false
+ },
+ "TRAINER_JACKI_1": {
+  "map": "MAP_ROUTE123",
+  "rematch": false
+ },
+ "TRAINER_JACKSON_1": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_JACLYN": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_JACOB": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_JAIDEN": {
+  "map": "MAP_ROUTE115",
+  "rematch": false
+ },
+ "TRAINER_JAMES_1": {
+  "map": "MAP_PETALBURG_WOODS",
+  "rematch": false
+ },
+ "TRAINER_JANI": {
+  "map": "MAP_ABANDONED_SHIP_ROOMS2_1F",
+  "rematch": false
+ },
+ "TRAINER_JANICE": {
+  "map": "MAP_ROUTE116",
+  "rematch": false
+ },
+ "TRAINER_JARED": {
+  "map": "MAP_FORTREE_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_JASMINE": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_JAYLEN": {
+  "map": "MAP_ROUTE113",
+  "rematch": false
+ },
+ "TRAINER_JAZMYN": {
+  "map": "MAP_ROUTE123",
+  "rematch": false
+ },
+ "TRAINER_JEFF": {
+  "map": "MAP_LAVARIDGE_TOWN_GYM_1F",
+  "rematch": false
+ },
+ "TRAINER_JEFFREY_1": {
+  "map": "MAP_ROUTE120",
+  "rematch": false
+ },
+ "TRAINER_JENNA": {
+  "map": "MAP_ROUTE120",
+  "rematch": false
+ },
+ "TRAINER_JENNIFER": {
+  "map": "MAP_ROUTE120",
+  "rematch": false
+ },
+ "TRAINER_JENNY_1": {
+  "map": "MAP_ROUTE124",
+  "rematch": false
+ },
+ "TRAINER_JEROME": {
+  "map": "MAP_ROUTE108",
+  "rematch": false
+ },
+ "TRAINER_JERRY_1": {
+  "map": "MAP_ROUTE116",
+  "rematch": false
+ },
+ "TRAINER_JESSICA_1": {
+  "map": "MAP_ROUTE121",
+  "rematch": false
+ },
+ "TRAINER_JOCELYN": {
+  "map": "MAP_DEWFORD_TOWN_GYM",
+  "rematch": false
+ },
+ "TRAINER_JODY": {
+  "map": "MAP_PETALBURG_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_JOEY": {
+  "map": "MAP_ROUTE116",
+  "rematch": false
+ },
+ "TRAINER_JOHANNA": {
+  "map": "MAP_ROUTE109_SEASHORE_HOUSE",
+  "rematch": false
+ },
+ "TRAINER_JOHNSON": {
+  "map": "MAP_ROUTE116",
+  "rematch": false
+ },
+ "TRAINER_JONAH": {
+  "map": "MAP_ROUTE127",
+  "rematch": false
+ },
+ "TRAINER_JONAS": {
+  "map": "MAP_ROUTE123",
+  "rematch": false
+ },
+ "TRAINER_JONATHAN": {
+  "map": "MAP_ROUTE132",
+  "rematch": false
+ },
+ "TRAINER_JOSE": {
+  "map": "MAP_ROUTE116",
+  "rematch": false
+ },
+ "TRAINER_JOSEPH": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_JOSH": {
+  "map": "MAP_RUSTBORO_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_JOSHUA": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE7",
+  "rematch": false
+ },
+ "TRAINER_JOSUE": {
+  "map": "MAP_ROUTE105",
+  "rematch": false
+ },
+ "TRAINER_JUAN_1": {
+  "map": "MAP_SOOTOPOLIS_CITY_GYM_1F",
+  "rematch": false
+ },
+ "TRAINER_JULIE": {
+  "map": "MAP_VICTORY_ROAD_B2F",
+  "rematch": false
+ },
+ "TRAINER_JULIO": {
+  "map": "MAP_JAGGED_PASS",
+  "rematch": false
+ },
+ "TRAINER_JUSTIN": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE3",
+  "rematch": false
+ },
+ "TRAINER_KAI": {
+  "map": "MAP_ROUTE114",
+  "rematch": false
+ },
+ "TRAINER_KALEB": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_KARA": {
+  "map": "MAP_ROUTE131",
+  "rematch": false
+ },
+ "TRAINER_KAREN_1": {
+  "map": "MAP_ROUTE116",
+  "rematch": false
+ },
+ "TRAINER_KATELYNN": {
+  "map": "MAP_VICTORY_ROAD_1F",
+  "rematch": false
+ },
+ "TRAINER_KATELYN_1": {
+  "map": "MAP_ROUTE128",
+  "rematch": false
+ },
+ "TRAINER_KATHLEEN": {
+  "map": "MAP_MOSSDEEP_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_KATIE": {
+  "map": "MAP_ROUTE130",
+  "rematch": false
+ },
+ "TRAINER_KAYLA": {
+  "map": "MAP_MT_PYRE_3F",
+  "rematch": false
+ },
+ "TRAINER_KAYLEY": {
+  "map": "MAP_ROUTE123",
+  "rematch": false
+ },
+ "TRAINER_KEEGAN": {
+  "map": "MAP_LAVARIDGE_TOWN_GYM_1F",
+  "rematch": false
+ },
+ "TRAINER_KEIGO": {
+  "map": "MAP_ROUTE120",
+  "rematch": false
+ },
+ "TRAINER_KEIRA": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE8",
+  "rematch": false
+ },
+ "TRAINER_KELVIN": {
+  "map": "MAP_ROUTE134",
+  "rematch": false
+ },
+ "TRAINER_KENT": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_KEVIN": {
+  "map": "MAP_ROUTE131",
+  "rematch": false
+ },
+ "TRAINER_KINDRA": {
+  "map": "MAP_ROUTE123",
+  "rematch": false
+ },
+ "TRAINER_KIRK": {
+  "map": "MAP_MAUVILLE_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_KIYO": {
+  "map": "MAP_ROUTE132",
+  "rematch": false
+ },
+ "TRAINER_KOICHI": {
+  "map": "MAP_ROUTE115",
+  "rematch": false
+ },
+ "TRAINER_KOJI_1": {
+  "map": "MAP_ROUTE127",
+  "rematch": false
+ },
+ "TRAINER_KYLA": {
+  "map": "MAP_ROUTE106",
+  "rematch": false
+ },
+ "TRAINER_KYRA": {
+  "map": "MAP_ROUTE115",
+  "rematch": false
+ },
+ "TRAINER_LAO_1": {
+  "map": "MAP_ROUTE113",
+  "rematch": false
+ },
+ "TRAINER_LARRY": {
+  "map": "MAP_ROUTE112",
+  "rematch": false
+ },
+ "TRAINER_LAURA": {
+  "map": "MAP_DEWFORD_TOWN_GYM",
+  "rematch": false
+ },
+ "TRAINER_LAUREL": {
+  "map": "MAP_ROUTE134",
+  "rematch": false
+ },
+ "TRAINER_LAWRENCE": {
+  "map": "MAP_ROUTE113",
+  "rematch": false
+ },
+ "TRAINER_LEAH": {
+  "map": "MAP_MT_PYRE_2F",
+  "rematch": false
+ },
+ "TRAINER_LENNY": {
+  "map": "MAP_ROUTE114",
+  "rematch": false
+ },
+ "TRAINER_LEONARD": {
+  "map": "MAP_SS_TIDAL_LOWER_DECK",
+  "rematch": false
+ },
+ "TRAINER_LEONARDO": {
+  "map": "MAP_ROUTE126",
+  "rematch": false
+ },
+ "TRAINER_LEONEL": {
+  "map": "MAP_ROUTE120",
+  "rematch": false
+ },
+ "TRAINER_LEROY": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE8",
+  "rematch": false
+ },
+ "TRAINER_LILITH": {
+  "map": "MAP_DEWFORD_TOWN_GYM",
+  "rematch": false
+ },
+ "TRAINER_LINDA": {
+  "map": "MAP_ROUTE133",
+  "rematch": false
+ },
+ "TRAINER_LOLA_1": {
+  "map": "MAP_ROUTE109",
+  "rematch": false
+ },
+ "TRAINER_LORENZO": {
+  "map": "MAP_ROUTE120",
+  "rematch": false
+ },
+ "TRAINER_LUCAS_1": {
+  "map": "MAP_ROUTE114",
+  "rematch": false
+ },
+ "TRAINER_LUIS": {
+  "map": "MAP_ROUTE105",
+  "rematch": false
+ },
+ "TRAINER_LUNG": {
+  "map": "MAP_ROUTE113",
+  "rematch": false
+ },
+ "TRAINER_LYDIA_1": {
+  "map": "MAP_ROUTE117",
+  "rematch": false
+ },
+ "TRAINER_LYLE": {
+  "map": "MAP_PETALBURG_WOODS",
+  "rematch": false
+ },
+ "TRAINER_MACEY": {
+  "map": "MAP_MOSSDEEP_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_MADELINE_1": {
+  "map": "MAP_ROUTE113",
+  "rematch": false
+ },
+ "TRAINER_MAKAYLA": {
+  "map": "MAP_ROUTE132",
+  "rematch": false
+ },
+ "TRAINER_MARC": {
+  "map": "MAP_RUSTBORO_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_MARCEL": {
+  "map": "MAP_ROUTE121",
+  "rematch": false
+ },
+ "TRAINER_MARCOS": {
+  "map": "MAP_ROUTE103",
+  "rematch": false
+ },
+ "TRAINER_MARIA_1": {
+  "map": "MAP_ROUTE117",
+  "rematch": false
+ },
+ "TRAINER_MARIELA": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE7",
+  "rematch": false
+ },
+ "TRAINER_MARK": {
+  "map": "MAP_MT_PYRE_2F",
+  "rematch": false
+ },
+ "TRAINER_MARLENE": {
+  "map": "MAP_ROUTE115",
+  "rematch": false
+ },
+ "TRAINER_MARLEY": {
+  "map": "MAP_ROUTE134",
+  "rematch": false
+ },
+ "TRAINER_MARTHA": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE3",
+  "rematch": false
+ },
+ "TRAINER_MARY": {
+  "map": "MAP_PETALBURG_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_MATT": {
+  "map": "MAP_AQUA_HIDEOUT_B2F",
+  "rematch": false
+ },
+ "TRAINER_MATTHEW": {
+  "map": "MAP_ROUTE108",
+  "rematch": false
+ },
+ "TRAINER_MAURA": {
+  "map": "MAP_MOSSDEEP_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_MAXIE_MAGMA_HIDEOUT": {
+  "map": "MAP_MAGMA_HIDEOUT_4F",
+  "rematch": false
+ },
+ "TRAINER_MAXIE_MT_CHIMNEY": {
+  "map": "MAP_MT_CHIMNEY",
+  "rematch": false
+ },
+ "TRAINER_MAY_LILYCOVE_MUDKIP": {
+  "map": "MAP_LILYCOVE_CITY",
+  "rematch": false
+ },
+ "TRAINER_MAY_LILYCOVE_TORCHIC": {
+  "map": "MAP_LILYCOVE_CITY",
+  "rematch": false
+ },
+ "TRAINER_MAY_LILYCOVE_TREECKO": {
+  "map": "MAP_LILYCOVE_CITY",
+  "rematch": false
+ },
+ "TRAINER_MAY_ROUTE_103_MUDKIP": {
+  "map": "MAP_ROUTE103",
+  "rematch": false
+ },
+ "TRAINER_MAY_ROUTE_103_TORCHIC": {
+  "map": "MAP_ROUTE103",
+  "rematch": false
+ },
+ "TRAINER_MAY_ROUTE_103_TREECKO": {
+  "map": "MAP_ROUTE103",
+  "rematch": false
+ },
+ "TRAINER_MAY_ROUTE_110_MUDKIP": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_MAY_ROUTE_110_TORCHIC": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_MAY_ROUTE_110_TREECKO": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_MAY_ROUTE_119_MUDKIP": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_MAY_ROUTE_119_TORCHIC": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_MAY_ROUTE_119_TREECKO": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_MAY_RUSTBORO_MUDKIP": {
+  "map": "MAP_RUSTBORO_CITY",
+  "rematch": false
+ },
+ "TRAINER_MAY_RUSTBORO_TORCHIC": {
+  "map": "MAP_RUSTBORO_CITY",
+  "rematch": false
+ },
+ "TRAINER_MAY_RUSTBORO_TREECKO": {
+  "map": "MAP_RUSTBORO_CITY",
+  "rematch": false
+ },
+ "TRAINER_MELINA": {
+  "map": "MAP_ROUTE117",
+  "rematch": false
+ },
+ "TRAINER_MELISSA": {
+  "map": "MAP_MT_CHIMNEY",
+  "rematch": false
+ },
+ "TRAINER_MICAH": {
+  "map": "MAP_SS_TIDAL_ROOMS",
+  "rematch": false
+ },
+ "TRAINER_MICHELLE": {
+  "map": "MAP_VICTORY_ROAD_B1F",
+  "rematch": false
+ },
+ "TRAINER_MIGUEL_1": {
+  "map": "MAP_ROUTE103",
+  "rematch": false
+ },
+ "TRAINER_MIKE_2": {
+  "map": "MAP_RUSTURF_TUNNEL",
+  "rematch": false
+ },
+ "TRAINER_MISSY": {
+  "map": "MAP_ROUTE108",
+  "rematch": false
+ },
+ "TRAINER_MITCHELL": {
+  "map": "MAP_VICTORY_ROAD_B1F",
+  "rematch": false
+ },
+ "TRAINER_MOLLIE": {
+  "map": "MAP_ROUTE133",
+  "rematch": false
+ },
+ "TRAINER_MYLES": {
+  "map": "MAP_ROUTE121",
+  "rematch": false
+ },
+ "TRAINER_NANCY": {
+  "map": "MAP_ROUTE114",
+  "rematch": false
+ },
+ "TRAINER_NAOMI": {
+  "map": "MAP_SS_TIDAL_ROOMS",
+  "rematch": false
+ },
+ "TRAINER_NATE": {
+  "map": "MAP_MOSSDEEP_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_NED": {
+  "map": "MAP_ROUTE106",
+  "rematch": false
+ },
+ "TRAINER_NICHOLAS": {
+  "map": "MAP_MOSSDEEP_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_NICOLAS_1": {
+  "map": "MAP_METEOR_FALLS_1F_2R",
+  "rematch": false
+ },
+ "TRAINER_NIKKI": {
+  "map": "MAP_ROUTE126",
+  "rematch": false
+ },
+ "TRAINER_NOB_1": {
+  "map": "MAP_ROUTE115",
+  "rematch": false
+ },
+ "TRAINER_NOLAN": {
+  "map": "MAP_ROUTE114",
+  "rematch": false
+ },
+ "TRAINER_NOLEN": {
+  "map": "MAP_ROUTE125",
+  "rematch": false
+ },
+ "TRAINER_NORMAN_1": {
+  "map": "MAP_PETALBURG_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_OLIVIA": {
+  "map": "MAP_SOOTOPOLIS_CITY_GYM_B1F",
+  "rematch": false
+ },
+ "TRAINER_OWEN": {
+  "map": "MAP_VICTORY_ROAD_B2F",
+  "rematch": false
+ },
+ "TRAINER_PABLO_1": {
+  "map": "MAP_ROUTE126",
+  "rematch": false
+ },
+ "TRAINER_PARKER": {
+  "map": "MAP_PETALBURG_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_PAT": {
+  "map": "MAP_ROUTE121",
+  "rematch": false
+ },
+ "TRAINER_PATRICIA": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE7",
+  "rematch": false
+ },
+ "TRAINER_PAUL": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE2",
+  "rematch": false
+ },
+ "TRAINER_PAULA": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE4",
+  "rematch": false
+ },
+ "TRAINER_PAXTON": {
+  "map": "MAP_ROUTE132",
+  "rematch": false
+ },
+ "TRAINER_PERRY": {
+  "map": "MAP_ROUTE118",
+  "rematch": false
+ },
+ "TRAINER_PETE": {
+  "map": "MAP_ROUTE103",
+  "rematch": false
+ },
+ "TRAINER_PHIL": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_PHILLIP": {
+  "map": "MAP_SS_TIDAL_LOWER_DECK",
+  "rematch": false
+ },
+ "TRAINER_PHOEBE": {
+  "map": "MAP_EVER_GRANDE_CITY_PHOEBES_ROOM",
+  "rematch": false
+ },
+ "TRAINER_PRESLEY": {
+  "map": "MAP_ROUTE125",
+  "rematch": false
+ },
+ "TRAINER_PRESTON": {
+  "map": "MAP_MOSSDEEP_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_QUINCY": {
+  "map": "MAP_VICTORY_ROAD_1F",
+  "rematch": false
+ },
+ "TRAINER_RACHEL": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_RANDALL": {
+  "map": "MAP_PETALBURG_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_REED": {
+  "map": "MAP_ROUTE129",
+  "rematch": false
+ },
+ "TRAINER_REYNA": {
+  "map": "MAP_ROUTE134",
+  "rematch": false
+ },
+ "TRAINER_RHETT": {
+  "map": "MAP_ROUTE103",
+  "rematch": false
+ },
+ "TRAINER_RICHARD": {
+  "map": "MAP_ROUTE131",
+  "rematch": false
+ },
+ "TRAINER_RICK": {
+  "map": "MAP_ROUTE102",
+  "rematch": false
+ },
+ "TRAINER_RICKY_1": {
+  "map": "MAP_ROUTE109",
+  "rematch": false
+ },
+ "TRAINER_RILEY": {
+  "map": "MAP_ROUTE120",
+  "rematch": false
+ },
+ "TRAINER_ROBERT_1": {
+  "map": "MAP_ROUTE120",
+  "rematch": false
+ },
+ "TRAINER_ROBIN": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE1",
+  "rematch": false
+ },
+ "TRAINER_RODNEY": {
+  "map": "MAP_ROUTE130",
+  "rematch": false
+ },
+ "TRAINER_ROGER": {
+  "map": "MAP_ROUTE127",
+  "rematch": false
+ },
+ "TRAINER_ROLAND": {
+  "map": "MAP_ROUTE124",
+  "rematch": false
+ },
+ "TRAINER_RONALD": {
+  "map": "MAP_ROUTE132",
+  "rematch": false
+ },
+ "TRAINER_ROSE_1": {
+  "map": "MAP_ROUTE118",
+  "rematch": false
+ },
+ "TRAINER_ROXANNE_1": {
+  "map": "MAP_RUSTBORO_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_RUBEN": {
+  "map": "MAP_ROUTE128",
+  "rematch": false
+ },
+ "TRAINER_SALLY": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE1",
+  "rematch": false
+ },
+ "TRAINER_SAMANTHA": {
+  "map": "MAP_MOSSDEEP_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_SAMUEL": {
+  "map": "MAP_VICTORY_ROAD_B1F",
+  "rematch": false
+ },
+ "TRAINER_SANTIAGO": {
+  "map": "MAP_ROUTE130",
+  "rematch": false
+ },
+ "TRAINER_SARAH": {
+  "map": "MAP_ROUTE116",
+  "rematch": false
+ },
+ "TRAINER_SAWYER_1": {
+  "map": "MAP_MT_CHIMNEY",
+  "rematch": false
+ },
+ "TRAINER_SEBASTIAN": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE6",
+  "rematch": false
+ },
+ "TRAINER_SHANE": {
+  "map": "MAP_ROUTE114",
+  "rematch": false
+ },
+ "TRAINER_SHANNON": {
+  "map": "MAP_VICTORY_ROAD_B1F",
+  "rematch": false
+ },
+ "TRAINER_SHARON": {
+  "map": "MAP_ROUTE125",
+  "rematch": false
+ },
+ "TRAINER_SHAWN": {
+  "map": "MAP_MAUVILLE_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_SHAYLA": {
+  "map": "MAP_ROUTE112",
+  "rematch": false
+ },
+ "TRAINER_SHEILA": {
+  "map": "MAP_MT_CHIMNEY",
+  "rematch": false
+ },
+ "TRAINER_SHELBY_1": {
+  "map": "MAP_MT_CHIMNEY",
+  "rematch": false
+ },
+ "TRAINER_SHELLY_SEAFLOOR_CAVERN": {
+  "map": "MAP_SEAFLOOR_CAVERN_ROOM3",
+  "rematch": false
+ },
+ "TRAINER_SHELLY_WEATHER_INSTITUTE": {
+  "map": "MAP_ROUTE119_WEATHER_INSTITUTE_2F",
+  "rematch": false
+ },
+ "TRAINER_SHIRLEY": {
+  "map": "MAP_MT_CHIMNEY",
+  "rematch": false
+ },
+ "TRAINER_SIDNEY": {
+  "map": "MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM",
+  "rematch": false
+ },
+ "TRAINER_SIENNA": {
+  "map": "MAP_ROUTE126",
+  "rematch": false
+ },
+ "TRAINER_SIMON": {
+  "map": "MAP_ROUTE109_SEASHORE_HOUSE",
+  "rematch": false
+ },
+ "TRAINER_SOPHIA": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE6",
+  "rematch": false
+ },
+ "TRAINER_SOPHIE": {
+  "map": "MAP_ROUTE113",
+  "rematch": false
+ },
+ "TRAINER_SPENCER": {
+  "map": "MAP_ROUTE124",
+  "rematch": false
+ },
+ "TRAINER_STAN": {
+  "map": "MAP_ROUTE125",
+  "rematch": false
+ },
+ "TRAINER_STEVEN": {
+  "map": "MAP_METEOR_FALLS_STEVENS_CAVE",
+  "rematch": false
+ },
+ "TRAINER_STEVE_1": {
+  "map": "MAP_ROUTE114",
+  "rematch": false
+ },
+ "TRAINER_SUSIE": {
+  "map": "MAP_ROUTE131",
+  "rematch": false
+ },
+ "TRAINER_SYLVIA": {
+  "map": "MAP_MOSSDEEP_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_TABITHA_MAGMA_HIDEOUT": {
+  "map": "MAP_MAGMA_HIDEOUT_4F",
+  "rematch": false
+ },
+ "TRAINER_TABITHA_MT_CHIMNEY": {
+  "map": "MAP_MT_CHIMNEY",
+  "rematch": false
+ },
+ "TRAINER_TAKAO": {
+  "map": "MAP_DEWFORD_TOWN_GYM",
+  "rematch": false
+ },
+ "TRAINER_TAKASHI": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_TALIA": {
+  "map": "MAP_ROUTE131",
+  "rematch": false
+ },
+ "TRAINER_TAMMY": {
+  "map": "MAP_ROUTE121",
+  "rematch": false
+ },
+ "TRAINER_TANYA": {
+  "map": "MAP_ROUTE125",
+  "rematch": false
+ },
+ "TRAINER_TARA": {
+  "map": "MAP_ROUTE108",
+  "rematch": false
+ },
+ "TRAINER_TASHA": {
+  "map": "MAP_MT_PYRE_5F",
+  "rematch": false
+ },
+ "TRAINER_TAYLOR": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_TED": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE2",
+  "rematch": false
+ },
+ "TRAINER_THALIA_1": {
+  "map": "MAP_ABANDONED_SHIP_ROOMS_1F",
+  "rematch": false
+ },
+ "TRAINER_THOMAS": {
+  "map": "MAP_SS_TIDAL_ROOMS",
+  "rematch": false
+ },
+ "TRAINER_TIANA": {
+  "map": "MAP_ROUTE102",
+  "rematch": false
+ },
+ "TRAINER_TIFFANY": {
+  "map": "MAP_SOOTOPOLIS_CITY_GYM_B1F",
+  "rematch": false
+ },
+ "TRAINER_TIMMY": {
+  "map": "MAP_ROUTE110",
+  "rematch": false
+ },
+ "TRAINER_TIMOTHY_1": {
+  "map": "MAP_ROUTE115",
+  "rematch": false
+ },
+ "TRAINER_TISHA": {
+  "map": "MAP_ROUTE129",
+  "rematch": false
+ },
+ "TRAINER_TOMMY": {
+  "map": "MAP_RUSTBORO_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_TONY_1": {
+  "map": "MAP_ROUTE107",
+  "rematch": false
+ },
+ "TRAINER_TRAVIS": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_TRENT_1": {
+  "map": "MAP_ROUTE112",
+  "rematch": false
+ },
+ "TRAINER_TYRON": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_VALERIE_1": {
+  "map": "MAP_MT_PYRE_6F",
+  "rematch": false
+ },
+ "TRAINER_VANESSA": {
+  "map": "MAP_ROUTE121",
+  "rematch": false
+ },
+ "TRAINER_VICKY": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_VICTOR": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_VICTORIA": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_VINCENT": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE8",
+  "rematch": false
+ },
+ "TRAINER_VIOLET": {
+  "map": "MAP_ROUTE123",
+  "rematch": false
+ },
+ "TRAINER_VIRGIL": {
+  "map": "MAP_MOSSDEEP_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_VITO": {
+  "map": "MAP_VICTORY_ROAD_B2F",
+  "rematch": false
+ },
+ "TRAINER_VIVI": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_VIVIAN": {
+  "map": "MAP_MAUVILLE_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_WADE": {
+  "map": "MAP_ROUTE118",
+  "rematch": false
+ },
+ "TRAINER_WALLACE": {
+  "map": "MAP_EVER_GRANDE_CITY_CHAMPIONS_ROOM",
+  "rematch": false
+ },
+ "TRAINER_WALLY_MAUVILLE": {
+  "map": "MAP_MAUVILLE_CITY",
+  "rematch": false
+ },
+ "TRAINER_WALLY_VR_1": {
+  "map": "MAP_VICTORY_ROAD_1F",
+  "rematch": false
+ },
+ "TRAINER_WALLY_VR_2": {
+  "map": "MAP_VICTORY_ROAD_1F",
+  "rematch": false
+ },
+ "TRAINER_WALTER_1": {
+  "map": "MAP_ROUTE121",
+  "rematch": false
+ },
+ "TRAINER_WARREN": {
+  "map": "MAP_ROUTE133",
+  "rematch": false
+ },
+ "TRAINER_WATTSON_1": {
+  "map": "MAP_MAUVILLE_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_WAYNE": {
+  "map": "MAP_ROUTE128",
+  "rematch": false
+ },
+ "TRAINER_WENDY": {
+  "map": "MAP_ROUTE123",
+  "rematch": false
+ },
+ "TRAINER_WILLIAM": {
+  "map": "MAP_MT_PYRE_3F",
+  "rematch": false
+ },
+ "TRAINER_WILTON_1": {
+  "map": "MAP_ROUTE111",
+  "rematch": false
+ },
+ "TRAINER_WINONA_1": {
+  "map": "MAP_FORTREE_CITY_GYM",
+  "rematch": false
+ },
+ "TRAINER_WINSTON_1": {
+  "map": "MAP_ROUTE104",
+  "rematch": false
+ },
+ "TRAINER_WYATT": {
+  "map": "MAP_ROUTE113",
+  "rematch": false
+ },
+ "TRAINER_YASU": {
+  "map": "MAP_ROUTE119",
+  "rematch": false
+ },
+ "TRAINER_YUJI": {
+  "map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE4",
+  "rematch": false
+ },
+ "TRAINER_ZANDER": {
+  "map": "MAP_MT_PYRE_2F",
+  "rematch": false
+ }
+}
