@@ -225,12 +225,40 @@ def _scale_trainers(world: "PokemonEmeraldWorld", region_sphere: dict[str, int],
         trainer.party = trainer.party._replace(pokemon=new_party)
 
 
+# Each encounter table type is gated by the regions that actually carry that encounter type.
+# (Rock smash has no dedicated region flag; its areas overlap walkable land, so reuse has_grass.)
+_SOURCE_FLAG: dict[PokemonSource, str] = {
+    PokemonSource.LAND: "has_grass",
+    PokemonSource.WATER: "has_water",
+    PokemonSource.FISHING: "has_fishing",
+    PokemonSource.ROCK_SMASH: "has_grass",
+}
+
+
+def _table_sphere(region_sphere: dict[str, int], map_regions: list[str],
+                  source: PokemonSource) -> "int | None":
+    """
+    Earliest sphere at which a given encounter type on a map becomes reachable. Prefer the regions
+    that actually carry that encounter type (e.g. the grass sub-region for LAND); fall back to any
+    region of the map. Mirrors Crystal's per-(region, encounter-type) keying so that, e.g., Route
+    103's early WEST grass is not scaled by its Surf-gated EAST region. Returns None if no region of
+    the map has a computed sphere (map never reached -> leave vanilla).
+    """
+    flag = _SOURCE_FLAG.get(source)
+    typed = [region_sphere[r] for r in map_regions
+             if r in region_sphere and getattr(data.regions[r], flag, False)] if flag else []
+    if typed:
+        return min(typed)
+    any_region = [region_sphere[r] for r in map_regions if r in region_sphere]
+    return min(any_region) if any_region else None
+
+
 def _scale_wild_encounters(world: "PokemonEmeraldWorld", region_sphere: dict[str, int],
                            min_level: int, max_level: int, curve: int) -> None:
     """
-    Rank each wild encounter table by the sphere of its map's region and flatten it to a single
-    scaled level (written to every slot's min == max by rom.py). Tables whose map has no reachable
-    region are left vanilla.
+    Rank each wild encounter table by the earliest sphere at which that encounter type's region
+    becomes reachable, and flatten it to a single scaled level (written to every slot's min == max
+    by rom.py). Tables whose map has no reachable region are left vanilla.
     """
     map_to_regions = _build_map_to_regions()
 
@@ -240,13 +268,11 @@ def _scale_wild_encounters(world: "PokemonEmeraldWorld", region_sphere: dict[str
     for map_name, map_data in world.modified_maps.items():
         if not map_data.encounters:
             continue
-        region = _representative_region(map_to_regions, map_name)
-        if region is None:
-            continue
-        sphere = region_sphere.get(region)
-        if sphere is None:
-            continue  # map never reached -> leave its tables vanilla
+        map_regions = map_to_regions.get(map_name, [])
         for source in map_data.encounters:
+            sphere = _table_sphere(region_sphere, map_regions, source)
+            if sphere is None:
+                continue  # type/map never reached -> leave this table vanilla
             scaled.append((sphere, map_name, source))
 
     if not scaled:
