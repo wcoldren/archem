@@ -1,8 +1,9 @@
+from typing import NamedTuple
 from unittest import TestCase
 
 from ..data import data, RegionData, PokemonSource
 from ..options import LevelScalingCurve
-from ..scaling import _generate_curve_levels, _table_sphere
+from ..scaling import _generate_curve_levels, _pin_superboss_trainers, _table_sphere
 
 
 class TestTableSphere(TestCase):
@@ -89,3 +90,73 @@ class TestCurveLevels(TestCase):
                 self.assertEqual(levels[0], 5)
                 self.assertEqual(levels[-1], 65)
                 self.assertEqual(levels, sorted(levels))  # non-decreasing
+
+
+# Minimal stubs mirroring just the attributes _pin_superboss_trainers touches.
+class _Mon(NamedTuple):
+    level: int
+
+
+class _Party(NamedTuple):
+    pokemon: list
+
+
+class _Trainer:
+    def __init__(self, party: _Party) -> None:
+        self.party = party
+
+
+class _World:
+    def __init__(self, trainers: list) -> None:
+        self.modified_trainers = trainers
+
+
+class TestSuperbossPin(TestCase):
+    """The superboss roof: weakest party member lands on max_level, the rest sit at/above it."""
+    _SENTINEL = object()
+
+    def setUp(self) -> None:
+        # Point the pinned constant at index 0 of our stub trainer list, restore after.
+        self._saved = data.constants.get("TRAINER_STEVEN", self._SENTINEL)
+        data.constants["TRAINER_STEVEN"] = 0
+
+    def tearDown(self) -> None:
+        if self._saved is self._SENTINEL:
+            data.constants.pop("TRAINER_STEVEN", None)
+        else:
+            data.constants["TRAINER_STEVEN"] = self._saved
+
+    def test_weakest_on_max_rest_above(self) -> None:
+        world = _World([_Trainer(_Party([_Mon(70), _Mon(75), _Mon(78)]))])
+        _pin_superboss_trainers(world, max_level=65)
+        levels = [m.level for m in world.modified_trainers[0].party.pokemon]
+        self.assertEqual(min(levels), 65)               # weakest pinned exactly to the cap
+        self.assertTrue(all(l >= 65 for l in levels))   # nothing below the cap
+        self.assertGreater(levels[-1], 65)              # the ace sits above it
+        self.assertEqual(levels, sorted(levels))        # spread/order preserved
+
+    def test_clamps_to_100(self) -> None:
+        world = _World([_Trainer(_Party([_Mon(10), _Mon(100)]))])
+        _pin_superboss_trainers(world, max_level=95)
+        levels = [m.level for m in world.modified_trainers[0].party.pokemon]
+        self.assertEqual(min(levels), 95)
+        self.assertLessEqual(max(levels), 100)
+
+    def test_empty_party_is_noop(self) -> None:
+        world = _World([_Trainer(_Party([]))])
+        _pin_superboss_trainers(world, max_level=65)
+        self.assertEqual(world.modified_trainers[0].party.pokemon, [])
+
+
+class TestWildStaticCap(TestCase):
+    """The 2/3-of-trainer-max cap applied to wild + legendary curves (Crystal's wild_static_max)."""
+
+    def test_two_thirds_and_floor_clamp(self) -> None:
+        cases = [
+            (2, 65, 43),   # round(65*2/3) = 43
+            (2, 73, 49),   # round(73*2/3) = 49 (Crystal's default max)
+            (50, 60, 50),  # 2/3 dips below min -> clamps to min_level
+        ]
+        for min_level, max_level, expected in cases:
+            with self.subTest(min_level=min_level, max_level=max_level):
+                self.assertEqual(max(min_level, round(max_level * 2 / 3)), expected)

@@ -61,11 +61,37 @@ def _generate_curve_levels(n: int, min_level: int, max_level: int, shape: int) -
     return levels
 
 
+# Gating battle-events whose defeat is deferred to the *end* of its sphere, so the content each one
+# unlocks lands in a later sphere instead of collapsing into the sphere where the fight first became
+# reachable. This is Crystal's `battle_events` mechanism (level_scaling.py): a progression-gating
+# trainer is the boundary of its sphere, so strong/gating fights scale up rather than down. Curated
+# and tunable — gym beats + Elite Four/Champion + the Meteor Falls superboss + key plot beats.
+_MILESTONE_EVENTS = frozenset({
+    "EVENT_DEFEAT_ROXANNE", "EVENT_DEFEAT_BRAWLY", "EVENT_DEFEAT_WATTSON",
+    "EVENT_DEFEAT_FLANNERY", "EVENT_DEFEAT_NORMAN", "EVENT_DEFEAT_WINONA",
+    "EVENT_DEFEAT_TATE_AND_LIZA", "EVENT_DEFEAT_JUAN",
+    "EVENT_DEFEAT_CHAMPION", "EVENT_DEFEAT_STEVEN",
+    "EVENT_DEFEAT_SHELLY", "EVENT_DEFEAT_MAXIE_AT_SPACE_STATION",
+})
+
+
+def _is_own_milestone(loc, player: int) -> bool:
+    """True for this player's gating battle-event locations (see _MILESTONE_EVENTS)."""
+    return (loc.player == player and loc.item is not None
+            and loc.item.name in _MILESTONE_EVENTS)
+
+
 def _compute_region_spheres(world: "PokemonEmeraldWorld") -> dict[str, int]:
     """
     Record the earliest sphere in which each of this player's regions becomes reachable.
     Uses region reachability (not location spheres) so regions with no live locations
     still get a sphere — important when Trainersanity is off.
+
+    Milestone gating fights (_MILESTONE_EVENTS) act as sphere boundaries: each wave prefers
+    non-milestone locations, and a milestone is only collected (as its own boundary wave) once
+    nothing else is reachable. This defers the content a milestone unlocks to a later sphere, so a
+    deliberately-hard gating trainer (e.g. the postgame Meteor Falls Steven, behind the Champion)
+    ranks deep instead of being scaled down to wherever it first became physically reachable.
     """
     multiworld = world.multiworld
     state = CollectionState(multiworld)
@@ -79,9 +105,15 @@ def _compute_region_spheres(world: "PokemonEmeraldWorld") -> dict[str, int]:
             if region.name not in region_sphere and region.can_reach(state):
                 region_sphere[region.name] = sphere
 
-        reachable = {loc for loc in unchecked if loc.can_reach(state)}
+        # Advance on non-milestone progress first; only cross milestones (as a boundary wave) when
+        # nothing else is reachable, so milestone-gated content falls into the next sphere.
+        reachable = {loc for loc in unchecked
+                     if not _is_own_milestone(loc, world.player) and loc.can_reach(state)}
         if not reachable:
-            break
+            reachable = {loc for loc in unchecked
+                         if _is_own_milestone(loc, world.player) and loc.can_reach(state)}
+            if not reachable:
+                break
         for loc in reachable:
             # collect() marks the player's reachability stale regardless of prevent_sweep,
             # so the next region.can_reach() recomputes and reachability cascades.
@@ -179,8 +211,45 @@ def perform_level_scaling(world: "PokemonEmeraldWorld") -> None:
     curve = world.options.level_scaling_curve.value
 
     _scale_trainers(world, region_sphere, min_level, max_level, curve)
+    _pin_superboss_trainers(world, max_level)
     _scale_wild_encounters(world, region_sphere, min_level, max_level, curve)
     _scale_legendary_encounters(world, min_level, max_level, curve)
+
+
+# Trainers pinned to the top of the curve regardless of when their region becomes reachable, mirroring
+# Crystal's scale_red_levels (which pins Red to the curve max). The postgame Meteor Falls superboss is
+# the Emerald analog; the Elite Four/Champion scale naturally via spheres and need no pin.
+_PINNED_SUPERBOSS_TRAINERS = ("TRAINER_STEVEN",)
+
+
+def _pin_superboss_trainers(world: "PokemonEmeraldWorld", max_level: int) -> None:
+    """
+    Override the rank-based result for designated superboss trainers so their *weakest* party member
+    sits at max_level and the rest scale above it (anchoring on the party minimum, like Crystal's
+    Red). Runs after _scale_trainers so it replaces whatever sphere rank assigned.
+    """
+    for const in _PINNED_SUPERBOSS_TRAINERS:
+        idx = data.constants.get(const)
+        if idx is None:
+            continue
+        trainer = world.modified_trainers[idx]
+        party = trainer.party.pokemon
+        if not party:
+            continue
+        old_base = min(mon.level for mon in party)
+        if old_base <= 0:
+            continue
+        new_party = []
+        for mon in party:
+            # Same spread-preserving formula as _scale_trainers, anchored on the floor: the weakest
+            # mon lands on max_level and every stronger mon comes out at or above it.
+            new_level = round(min(
+                max_level * mon.level / old_base,
+                max_level + mon.level - old_base,
+            ))
+            new_level = max(1, min(100, new_level))
+            new_party.append(mon._replace(level=new_level))
+        trainer.party = trainer.party._replace(pokemon=new_party)
 
 
 def _scale_trainers(world: "PokemonEmeraldWorld", region_sphere: dict[str, int],
@@ -279,7 +348,10 @@ def _scale_wild_encounters(world: "PokemonEmeraldWorld", region_sphere: dict[str
         return
 
     scaled.sort()
-    targets = _generate_curve_levels(len(scaled), min_level, max_level, curve)
+    # Wilds cap below the trainer max (Crystal's wild_static_max = 2/3 of the trainer ceiling), so
+    # wild levels stay under the trainers gating the same progression depth.
+    wild_static_max = max(min_level, round(max_level * 2 / 3))
+    targets = _generate_curve_levels(len(scaled), min_level, wild_static_max, curve)
 
     for (_sphere, map_name, source), target in zip(scaled, targets):
         encounters = world.modified_maps[map_name].encounters
@@ -304,7 +376,9 @@ def _scale_legendary_encounters(world: "PokemonEmeraldWorld",
         return
 
     scaled.sort()
-    targets = _generate_curve_levels(len(scaled), min_level, max_level, curve)
+    # Statics/legendaries cap below the trainer max, same as wilds (Crystal's wild_static_max).
+    wild_static_max = max(min_level, round(max_level * 2 / 3))
+    targets = _generate_curve_levels(len(scaled), min_level, wild_static_max, curve)
 
     for (_vanilla_level, idx), target in zip(scaled, targets):
         encounter = world.modified_legendary_encounters[idx]
