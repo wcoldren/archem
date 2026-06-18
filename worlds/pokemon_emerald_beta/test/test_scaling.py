@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from ..data import data, RegionData, PokemonSource
 from ..options import LevelScalingCurve
-from ..scaling import _generate_curve_levels, _pin_superboss_trainers, _table_sphere
+from ..scaling import _generate_curve_levels, _pin_superboss_trainers, _table_sphere, _target_levels
 
 
 class TestTableSphere(TestCase):
@@ -160,3 +160,48 @@ class TestWildStaticCap(TestCase):
         for min_level, max_level, expected in cases:
             with self.subTest(min_level=min_level, max_level=max_level):
                 self.assertEqual(max(min_level, round(max_level * 2 / 3)), expected)
+
+
+class TestTargetLevels(TestCase):
+    """The rung selector: vanilla reuses the real levels (sorted, min/max ignored); others curve."""
+
+    def test_vanilla_returns_sorted_vanilla(self) -> None:
+        vanilla = [40, 5, 22, 5, 60]
+        self.assertEqual(
+            _target_levels(LevelScalingCurve.option_vanilla, vanilla, min_level=2, max_level=65),
+            sorted(vanilla),
+        )
+
+    def test_vanilla_ignores_min_max(self) -> None:
+        # Vanilla values pass straight through even when they sit outside [min, max].
+        self.assertEqual(
+            _target_levels(LevelScalingCurve.option_vanilla, [80, 10], min_level=2, max_level=65),
+            [10, 80],
+        )
+
+    def test_non_vanilla_matches_curve(self) -> None:
+        # The vanilla_levels values are unused for synthetic curves; only their count matters.
+        out = _target_levels(LevelScalingCurve.option_linear, [0, 0, 0, 0, 0], min_level=10, max_level=50)
+        self.assertEqual(out, _generate_curve_levels(5, 10, 50, LevelScalingCurve.option_linear))
+        self.assertEqual(out, [10, 20, 30, 40, 50])
+
+
+class TestVanillaLevelDataLoaded(TestCase):
+    """The extraction enabler: wild_levels.json / misc_levels.json are joined onto the data model."""
+
+    def test_wild_levels_aligned_with_slots(self) -> None:
+        carried = 0
+        for map_data in data.maps.values():
+            for table in map_data.encounters.values():
+                if table.min_levels is not None:
+                    carried += 1
+                    self.assertEqual(len(table.min_levels), len(table.slots))
+                    self.assertEqual(len(table.max_levels), len(table.slots))
+        self.assertGreater(carried, 0, "expected wild tables to carry backfilled vanilla levels")
+
+    def test_misc_levels_populated_with_eggs_absent(self) -> None:
+        levels = [mon.level for mon in data.misc_pokemon]
+        self.assertTrue(any(level is not None for level in levels),
+                        "expected some misc Pokemon to carry a backfilled vanilla level")
+        # Level-less entries are expected (e.g. the Wynaut egg gift, which has no decomp level).
+        self.assertTrue(any(level is None for level in levels))

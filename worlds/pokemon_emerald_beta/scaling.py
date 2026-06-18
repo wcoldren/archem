@@ -16,12 +16,19 @@ is distributed across it by rank.
   (this covers rematches and Battle Frontier brains, matching Crystal's default of excluding
   rematches).
 - Wild encounters: each encounter table is mapped to its map's region, ranked by sphere, and
-  flattened to a single scaled level applied to every slot (Crystal-style; preserving vanilla
-  per-slot spread would require the extractor to emit vanilla min/max levels, which it does not).
-  Tables whose map has no reachable region are left vanilla.
+  flattened to a single scaled level applied to every slot (Crystal-style). The table's vanilla
+  level (max over its slots, backfilled by data/extract_wild_levels.py) is used as its rung in
+  vanilla curve mode. Tables whose map has no reachable region are left vanilla.
 - Legendaries: ranked by their vanilla level as a progression proxy (legendaries carry no region
-  link, only an address), then assigned the curve by rank. Misc/gift Pokemon are not scaled — the
-  extracted data carries no vanilla level for them.
+  link, only an address), then assigned the curve by rank.
+- Misc / gift Pokemon: NOT scaled. Their vanilla levels are now extracted (see below), but their
+  ROM address is a species pointer rather than a level operand, so there is nowhere to write a
+  scaled level yet — see the note above _scale_legendary_encounters.
+
+The `vanilla` curve (LevelScalingCurve.option_vanilla, ported from Crystal's `vanilla` LevelCurve)
+is a passthrough: instead of synthesizing a min->max curve, it reuses each category's own vanilla
+levels (sorted) as the rungs, so the game's real level distribution is redistributed along
+progression depth rather than replaced. It needs the backfilled vanilla wild/misc levels above.
 """
 from __future__ import annotations
 
@@ -59,6 +66,20 @@ def _generate_curve_levels(n: int, min_level: int, max_level: int, shape: int) -
             t = t * t * (3 - 2 * t)  # smoothstep
         levels.append(round(lo + span * t))
     return levels
+
+
+def _target_levels(curve: int, vanilla_levels: list[int], min_level: int, max_level: int) -> list[int]:
+    """
+    Rung levels for the entities of one category, already ordered by progression (sphere) rank.
+
+    - vanilla curve: reuse the category's own vanilla levels, sorted ascending (min_level/max_level
+      ignored), so the game's real level distribution is redistributed along progression depth
+      rather than replaced (Crystal's `vanilla` LevelCurve). Requires one vanilla level per entity.
+    - other curves: synthesize a min_level -> max_level curve of the requested shape.
+    """
+    if curve == LevelScalingCurve.option_vanilla:
+        return sorted(vanilla_levels)
+    return _generate_curve_levels(len(vanilla_levels), min_level, max_level, curve)
 
 
 # Gating battle-events whose defeat is deferred to the *end* of its sphere, so the content each one
@@ -211,7 +232,13 @@ def perform_level_scaling(world: "PokemonEmeraldWorld") -> None:
     curve = world.options.level_scaling_curve.value
 
     _scale_trainers(world, region_sphere, min_level, max_level, curve)
-    _pin_superboss_trainers(world, max_level)
+    # The superboss roof forces an outlier-strong party (the postgame Steven) to the top so it
+    # isn't dragged below its progression peers by sphere rank. In curve modes that means pinning
+    # its weakest member to max_level. In vanilla mode _scale_trainers leaves the superboss at its
+    # full vanilla levels instead (see below), which is the faithful "keep the game's own levels"
+    # behavior, so there is nothing left to pin.
+    if curve != LevelScalingCurve.option_vanilla:
+        _pin_superboss_trainers(world, max_level)
     _scale_wild_encounters(world, region_sphere, min_level, max_level, curve)
     _scale_legendary_encounters(world, min_level, max_level, curve)
 
@@ -256,9 +283,20 @@ def _scale_trainers(world: "PokemonEmeraldWorld", region_sphere: dict[str, int],
                     min_level: int, max_level: int, curve: int) -> None:
     trainer_region = _build_trainer_region_map(world)
 
+    # In vanilla mode the superboss keeps its full vanilla levels (it is the strongest party in the
+    # game; reassigning it a sphere-ranked vanilla ace would drag it down, e.g. Steven 78 -> 44).
+    # Excluding it here leaves modified_trainers at its deep-copied vanilla levels; curve modes
+    # still scale it and let _pin_superboss_trainers anchor it to the cap afterward.
+    skip_idxs: set[int] = set()
+    if curve == LevelScalingCurve.option_vanilla:
+        skip_idxs = {idx for idx in (data.constants.get(c) for c in _PINNED_SUPERBOSS_TRAINERS)
+                     if idx is not None}
+
     # Gather every scaled trainer with its progression depth and vanilla ace level.
     scaled: list[tuple[int, int, int]] = []  # (sphere, old_base, idx)
     for idx, region_name in trainer_region.items():
+        if idx in skip_idxs:
+            continue  # superboss left at full vanilla strength in vanilla mode
         sphere = region_sphere.get(region_name)
         if sphere is None:
             continue  # region never reached -> leave this trainer vanilla
@@ -274,9 +312,10 @@ def _scale_trainers(world: "PokemonEmeraldWorld", region_sphere: dict[str, int],
         return
 
     # Order by progression depth, then vanilla strength, then index (deterministic), and
-    # distribute the level curve across the trainers by rank.
+    # distribute the level curve across the trainers by rank. In vanilla mode the rungs are the
+    # trainers' own vanilla ace levels, sorted, so the real aces are redistributed by sphere.
     scaled.sort()
-    targets = _generate_curve_levels(len(scaled), min_level, max_level, curve)
+    targets = _target_levels(curve, [old_base for _sphere, old_base, _idx in scaled], min_level, max_level)
 
     for (_sphere, old_base, idx), target in zip(scaled, targets):
         trainer = world.modified_trainers[idx]
@@ -331,29 +370,36 @@ def _scale_wild_encounters(world: "PokemonEmeraldWorld", region_sphere: dict[str
     """
     map_to_regions = _build_map_to_regions()
 
-    # (sphere, map_name, source) keys -> deterministic order. PokemonSource is a StrEnum, so it
-    # sorts as a string and indexes the encounters dict directly.
-    scaled: list[tuple[int, str, PokemonSource]] = []
+    # (sphere, map_name, source, vanilla_level) keys -> deterministic order. PokemonSource is a
+    # StrEnum, so it sorts as a string and indexes the encounters dict directly. vanilla_level is
+    # the table's top vanilla slot level (its rung in vanilla mode), or None if not backfilled.
+    scaled: list[tuple[int, str, PokemonSource, "int | None"]] = []
     for map_name, map_data in world.modified_maps.items():
         if not map_data.encounters:
             continue
         map_regions = map_to_regions.get(map_name, [])
-        for source in map_data.encounters:
+        for source, table in map_data.encounters.items():
             sphere = _table_sphere(region_sphere, map_regions, source)
             if sphere is None:
                 continue  # type/map never reached -> leave this table vanilla
-            scaled.append((sphere, map_name, source))
+            vanilla = max(table.max_levels) if table.max_levels else None
+            scaled.append((sphere, map_name, source, vanilla))
+
+    # In vanilla mode a table with no backfilled level has no rung; leave it at its ROM vanilla
+    # levels (which is exactly what vanilla mode wants) rather than guessing.
+    if curve == LevelScalingCurve.option_vanilla:
+        scaled = [entry for entry in scaled if entry[3] is not None]
 
     if not scaled:
         return
 
-    scaled.sort()
+    scaled.sort(key=lambda entry: entry[:3])
     # Wilds cap below the trainer max (Crystal's wild_static_max = 2/3 of the trainer ceiling), so
     # wild levels stay under the trainers gating the same progression depth.
     wild_static_max = max(min_level, round(max_level * 2 / 3))
-    targets = _generate_curve_levels(len(scaled), min_level, wild_static_max, curve)
+    targets = _target_levels(curve, [entry[3] for entry in scaled], min_level, wild_static_max)
 
-    for (_sphere, map_name, source), target in zip(scaled, targets):
+    for (_sphere, map_name, source, _vanilla), target in zip(scaled, targets):
         encounters = world.modified_maps[map_name].encounters
         encounters[source] = encounters[source]._replace(scaled_level=target)
 
@@ -378,8 +424,18 @@ def _scale_legendary_encounters(world: "PokemonEmeraldWorld",
     scaled.sort()
     # Statics/legendaries cap below the trainer max, same as wilds (Crystal's wild_static_max).
     wild_static_max = max(min_level, round(max_level * 2 / 3))
-    targets = _generate_curve_levels(len(scaled), min_level, wild_static_max, curve)
+    targets = _target_levels(curve, [vanilla for vanilla, _idx in scaled], min_level, wild_static_max)
 
     for (_vanilla_level, idx), target in zip(scaled, targets):
         encounter = world.modified_legendary_encounters[idx]
         world.modified_legendary_encounters[idx] = encounter._replace(scaled_level=target)
+
+
+# Misc/gift Pokemon (Devon-Scope Kecleons, New Mauville Voltorbs/Electrodes, the Castform gift,
+# etc.) are NOT scaled. data/extract_misc_levels.py backfills their vanilla levels onto
+# MiscPokemonData.level (the extraction enabler), but a misc entry's ROM address points at a
+# species field in an object-event/static table, not a setwildbattle/givemon operand, so there is
+# no known address at which to WRITE a scaled level (address + 2 is not the level, unlike
+# legendaries — verified against the base ROM). Scaling them is blocked until the level-operand
+# addresses are extracted (engine-extractor work); the vanilla levels are loaded now so that step
+# is the only thing left.

@@ -13,11 +13,15 @@ Overflow up to 999 per type of item is put in your PC.
 - Added marine cave and terra cave locations to slot data for trackers, and added new event flags for players
 discovering them at the weather institute.
 - New `level_scaling` option that rescales levels by logical progression depth (the sphere in which each region
-first becomes reachable), with `level_scaling_curve` (linear/sqrt/quadratic/s-curve) and
+first becomes reachable), with `level_scaling_curve` (vanilla/linear/sqrt/quadratic/s-curve) and
 `level_scaling_min_level`/`level_scaling_max_level` controls. Adapted from the Pokémon Crystal Archipelago level
 scaling by cheerioschelsea ("Implement Sphere Based Level Scaling") and James White. Scales trainers and wild
 encounters by region sphere, and legendary static encounters by their vanilla level as a progression proxy. Each
-wild encounter table is flattened to a single scaled level across all its slots. (Gift Pokémon are not scaled.)
+wild encounter table is flattened to a single scaled level across all its slots. The `vanilla` curve (Crystal
+parity) keeps the game's own levels, redistributing them by progression depth instead of replacing them with a
+synthetic curve, and keeps an outlier-strong superboss (the postgame Steven) at full strength; min/max level
+controls are ignored in this mode. (Gift Pokémon are not scaled — their vanilla levels are now extracted but their
+level operand has no writable ROM address yet.)
 
 ### Fixes
 

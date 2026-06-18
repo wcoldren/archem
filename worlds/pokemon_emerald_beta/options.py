@@ -686,9 +686,15 @@ class LevelScaling(Choice):
 
 class LevelScalingCurve(Choice):
     """
-    When Level Scaling is enabled, the shape of the curve used to distribute trainer levels from
-    the minimum to the maximum across all scaled trainers, ordered by logical progression.
+    When Level Scaling is enabled, the shape of the curve used to distribute levels across all
+    scaled content (trainers, wild encounters, legendaries), ordered by logical progression.
 
+    Min Level / Max Level set the curve's endpoints, except in Vanilla mode, which ignores them.
+
+    - Vanilla: Keep the game's own levels, redistributed by progression depth instead of replaced
+      with a synthetic curve. Each trainer/encounter is reassigned a real vanilla level by its
+      sphere rank, so an outlier-strong late fight (e.g. the postgame Steven) stays strong rather
+      than being dragged toward the curve.
     - Linear: Levels increase at a constant rate from min to max.
     - Sqrt: Levels rise quickly early then taper off (harder early game, compressed late game).
     - Quadratic: Levels stay low early then rise steeply (easier early game, steep late game).
@@ -696,6 +702,7 @@ class LevelScalingCurve(Choice):
     """
     display_name = "Level Scaling Curve"
     default = 1
+    option_vanilla = 0
     option_linear = 1
     option_sqrt = 2
     option_quadratic = 3
