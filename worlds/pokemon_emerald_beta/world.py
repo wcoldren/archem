@@ -674,7 +674,7 @@ class PokemonEmeraldWorld(World):
 
         # Modify TM moves
         if self.options.tm_tutor_moves:
-            new_moves: Set[int] = set()
+            new_moves: set[int] = set()
 
             for i in range(50):
                 new_move = get_random_move(self.random, new_moves | self.blacklisted_moves)
