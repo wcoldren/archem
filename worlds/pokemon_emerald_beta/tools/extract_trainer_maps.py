@@ -49,10 +49,10 @@ REMATCH_MACROS = {"trainerbattle_rematch", "trainerbattle_rematch_double"}
 
 
 def _default_maps_dir() -> Path:
-    # This file lives at .../vendor/archem/worlds/pokemon_emerald_beta/data/extract_trainer_maps.py
+    # This file lives at .../vendor/archem/worlds/pokemon_emerald_beta/tools/extract_trainer_maps.py
     # The decomp is a sibling clone at .../vendor/emerald-archipelago/data/maps.
     here = Path(__file__).resolve()
-    vendor = here.parents[4]  # .../vendor
+    vendor = here.parents[4]  # .../vendor (tools/ is the same depth as the old data/ location)
     return vendor / "emerald-archipelago" / "data" / "maps"
 
 
@@ -115,8 +115,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--maps-dir", type=Path, default=_default_maps_dir(),
                         help="decomp data/maps directory (default: sibling emerald-archipelago checkout)")
-    parser.add_argument("--out", type=Path, default=Path(__file__).resolve().parent / "trainer_map.json",
-                        help="output JSON path (default: ./trainer_map.json next to this script)")
+    parser.add_argument("--out", type=Path,
+                        default=Path(__file__).resolve().parent.parent / "data" / "trainer_map.json",
+                        help="output JSON path (default: ../data/trainer_map.json, the world data dir)")
     parser.add_argument("--quiet", action="store_true", help="suppress the summary report")
     args = parser.parse_args()
 
