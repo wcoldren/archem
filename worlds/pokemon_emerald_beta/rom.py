@@ -825,6 +825,11 @@ def _set_legendary_encounters(world: PokemonEmeraldWorld, patch: PokemonEmeraldP
 
 
 def _set_misc_pokemon(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch) -> None:
+    # Only the species is written: unlike legendaries, a misc entry's address points at a species
+    # field in an object-event/static table, NOT a setwildbattle/givemon operand, so address + 2 is
+    # not the battle level (the level lives in a separate, shared script). Misc level scaling is
+    # therefore blocked until those level-operand addresses are extracted (see scaling.py and
+    # tools/extract_misc_levels.py).
     for encounter in world.modified_misc_pokemon:
         patch.write_token(APTokenTypes.WRITE, encounter.address, struct.pack("<H", encounter.species_id))
 

@@ -148,6 +148,10 @@ class EncounterTableData(NamedTuple):
     slots: list[int]
     address: int
     scaled_level: int | None = None  # set by level scaling; flattened across all slots
+    # Per-slot vanilla levels, index-aligned with slots (from wild_levels.json; None if absent).
+    # extracted_data.json carries only species, so these are backfilled by extract_wild_levels.py.
+    min_levels: list[int] | None = None
+    max_levels: list[int] | None = None
 
 
 class PokemonSource(StrEnum):
@@ -333,6 +337,31 @@ def load_json_data(data_name: str) -> dict[str, Any]:
     return orjson.loads(pkgutil.get_data(__name__, "data/" + data_name).decode("utf-8-sig"))
 
 
+# (extracted_data.json encounter key, PokemonSource, wild_levels.json category).
+_ENCOUNTER_SOURCES = (
+    ("land_encounters", PokemonSource.LAND, "land"),
+    ("water_encounters", PokemonSource.WATER, "water"),
+    ("fishing_encounters", PokemonSource.FISHING, "fishing"),
+    ("rock_smash_encounters", PokemonSource.ROCK_SMASH, "rock_smash"),
+)
+
+
+def _build_encounter_table(table_json: dict[str, Any], map_levels: "dict | None", category: str
+                           ) -> EncounterTableData:
+    """
+    Build an EncounterTableData, backfilling per-slot vanilla levels from wild_levels.json when
+    present and length-aligned with the species slots. A mismatch (or missing file) just leaves
+    levels None, so scaling falls back to its synthetic curve for that table.
+    """
+    slots = table_json["slots"]
+    levels = map_levels.get(category) if map_levels else None
+    min_levels = max_levels = None
+    if levels and len(levels) == len(slots):
+        min_levels = [pair[0] for pair in levels]
+        max_levels = [pair[1] for pair in levels]
+    return EncounterTableData(slots, table_json["address"], min_levels=min_levels, max_levels=max_levels)
+
+
 def _init() -> None:
     import re
 
@@ -350,6 +379,18 @@ def _init() -> None:
     except FileNotFoundError:
         data.trainer_map = {}
 
+    # Vanilla wild/misc levels backfilled from the decomp (see extract_wild_levels.py /
+    # extract_misc_levels.py), used as the basis for the `vanilla` scaling curve and to make
+    # misc/gift Pokemon scalable at all. Optional: missing files leave levels absent.
+    try:
+        wild_levels = load_json_data("wild_levels.json")
+    except FileNotFoundError:
+        wild_levels = {}
+    try:
+        misc_levels = load_json_data("misc_levels.json")
+    except FileNotFoundError:
+        misc_levels = {}
+
     location_attributes_json = load_json_data("locations.json")
 
     # Create map data
@@ -359,26 +400,10 @@ def _init() -> None:
             continue
 
         encounter_tables: dict[PokemonSource, EncounterTableData] = {}
-        if "land_encounters" in map_json:
-            encounter_tables[PokemonSource.LAND] = EncounterTableData(
-                map_json["land_encounters"]["slots"],
-                map_json["land_encounters"]["address"]
-            )
-        if "water_encounters" in map_json:
-            encounter_tables[PokemonSource.WATER] = EncounterTableData(
-                map_json["water_encounters"]["slots"],
-                map_json["water_encounters"]["address"]
-            )
-        if "fishing_encounters" in map_json:
-            encounter_tables[PokemonSource.FISHING] = EncounterTableData(
-                map_json["fishing_encounters"]["slots"],
-                map_json["fishing_encounters"]["address"]
-            )
-        if "rock_smash_encounters" in map_json:
-            encounter_tables[PokemonSource.ROCK_SMASH] = EncounterTableData(
-                map_json["rock_smash_encounters"]["slots"],
-                map_json["rock_smash_encounters"]["address"]
-            )
+        map_levels = wild_levels.get(map_name)
+        for json_key, source, category in _ENCOUNTER_SOURCES:
+            if json_key in map_json:
+                encounter_tables[source] = _build_encounter_table(map_json[json_key], map_levels, category)
 
         # Derive a user-facing label
         label: list[str] = []
@@ -1006,9 +1031,11 @@ def _init() -> None:
         ))
 
     for misc_pokemon_json in extracted_data["misc_pokemon"]:
+        address = misc_pokemon_json["address"]
         data.misc_pokemon.append(MiscPokemonData(
             misc_pokemon_json["species"],
-            misc_pokemon_json["address"]
+            address,
+            level=misc_levels.get(str(address))
         ))
 
     # TM moves
