@@ -46,6 +46,18 @@ Pokemon Emerald Beta:
   trap_weights:
     Faint Trap: 1
 
+  # Standard test-seed QoL: hold A to advance text, walk past trainers.
+  turbo_a: on
+  blind_trainers: on
+
+  # Standard test-seed start inventory (lands in your PC).
+  start_inventory:
+    Hyper Potion: 99
+    Max Repel: 99
+    Ultra Ball: 99
+    Full Heal: 99
+    Nugget: 99
+
   # --- OPTIONAL: deterministic single trap at one early check ---
   # For a "one trap at the first check" test instead of all-filler traps:
   #   * set filler_trap_percentage back to 0 above
