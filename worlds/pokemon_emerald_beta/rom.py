@@ -19,8 +19,8 @@ from settings import get_settings
 from worlds.Files import APPatchExtension, APProcedurePatch, APTokenMixin, APTokenTypes
 
 from .data import GAME_NAME, TrainerPokemonDataTypeEnum, BASE_OFFSET, data
-from .options import (RandomizeWildPokemon, RandomizeTrainerParties, EliteFourRequirement, NormanRequirement,
-                      MatchTrainerLevels)
+from .options import (RandomizeWildPokemon, RandomizeTrainerParties, RandomizeEvolutions, EliteFourRequirement,
+                      NormanRequirement, MatchTrainerLevels)
 from .locations import PokemonEmeraldLocation
 from .pokemon import HM_MOVES, get_random_move
 from .util import bool_array_to_int, encode_string, get_easter_egg
@@ -353,6 +353,10 @@ def write_tokens(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch
 
     # Set species data
     _set_species_info(world, patch, easter_egg)
+
+    # Set evolutions
+    if world.options.evolutions != RandomizeEvolutions.option_vanilla:
+        _set_evolutions(world, patch)
 
     # Set encounter tables. Also runs when level scaling is on, even with vanilla wild
     # species, since _set_encounter_tables is where scaled wild levels are written.
@@ -771,6 +775,22 @@ def _set_species_info(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedure
                 level_move = learnset_move.level << 9 | easter_egg[1]
 
             patch.write_token(APTokenTypes.WRITE, species.learnset_address + (i * 2), struct.pack("<H", level_move))
+
+
+# struct Evolution { u16 method; u16 param; u16 targetSpecies; } + 2 bytes padding = 8 bytes.
+# gEvolutionTable is a flat [species_id][EVOS_PER_MON] array; species_id is the row index.
+_EVOLUTION_ENTRY_SIZE = 8
+_EVOS_PER_MON = 5
+_EVOLUTION_TARGET_OFFSET = 4
+
+
+def _set_evolutions(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch) -> None:
+    table_address = data.rom_addresses["gEvolutionTable"]
+    for species in world.modified_species.values():
+        species_base = table_address + species.species_id * _EVOLUTION_ENTRY_SIZE * _EVOS_PER_MON
+        for i, evolution in enumerate(species.evolutions):
+            target_address = species_base + (i * _EVOLUTION_ENTRY_SIZE) + _EVOLUTION_TARGET_OFFSET
+            patch.write_token(APTokenTypes.WRITE, target_address, struct.pack("<H", evolution.species_id))
 
 
 def _set_opponents(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch, easter_egg: tuple[int, int]) -> None:
