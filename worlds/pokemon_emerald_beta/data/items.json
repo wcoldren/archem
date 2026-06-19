@@ -1783,5 +1783,17 @@
     "classification": "TRAP",
     "tags": ["Trap"],
     "modern_id": null
+  },
+  "POISON_TRAP": {
+    "label": "Poison Trap",
+    "classification": "TRAP",
+    "tags": ["Trap"],
+    "modern_id": null
+  },
+  "SLEEP_TRAP": {
+    "label": "Sleep Trap",
+    "classification": "TRAP",
+    "tags": ["Trap"],
+    "modern_id": null
   }
 }

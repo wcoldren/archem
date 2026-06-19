@@ -28,6 +28,19 @@ DEFEATED_WALLACE_FLAG = data.constants["TRAINER_FLAGS_START"] + data.constants["
 DEFEATED_STEVEN_FLAG = data.constants["TRAINER_FLAGS_START"] + data.constants["TRAINER_STEVEN"]
 DEFEATED_NORMAN_FLAG = data.constants["TRAINER_FLAGS_START"] + data.constants["TRAINER_NORMAN_1"]
 
+# struct Pokemon layout (canonical pokeemerald, stable across the AP fork since it's a battle/runtime
+# IWRAM structure, not a relocated save field). Each party slot is 100 bytes. `personality` (u32) at
+# offset 0 is plaintext and nonzero only for occupied slots. `status` (status1, u32) at offset 0x50
+# sits outside the encrypted box substructs (0x00-0x4F), so it can be written directly.
+POKEMON_STRIDE = 100
+POKEMON_PERSONALITY_OFFSET = 0
+POKEMON_STATUS1_OFFSET = 0x50
+PARTY_SIZE = 6
+# STATUS1 bitfield values. Poison ticks in the overworld; sleep is a 1-7 turn counter in bits 0-2
+# (felt in the next battle).
+STATUS1_POISON = 0x08
+STATUS1_SLEEP_TURNS = 0x03
+
 # These flags are communicated to the tracker as a bitfield using this order.
 # Modifying the order will cause undetectable autotracking issues.
 TRACKER_EVENT_FLAGS = [
@@ -609,9 +622,59 @@ class PokemonEmeraldClient(BizHawkClient):
                 logger.info("Faint Trap received!")
             return success
 
+        if item_data.label == "Poison Trap":
+            count = ctx.slot_data.get("poison_trap_party_size", 1)
+            success = await self._afflict_party_status(ctx, guards, STATUS1_POISON, count)
+            if success:
+                logger.info("Poison Trap received!")
+            return success
+
+        if item_data.label == "Sleep Trap":
+            count = ctx.slot_data.get("sleep_trap_party_size", 1)
+            success = await self._afflict_party_status(ctx, guards, STATUS1_SLEEP_TURNS, count)
+            if success:
+                logger.info("Sleep Trap received!")
+            return success
+
         # Unknown trap type: advance past it rather than blocking the item queue forever.
         logger.warning(f"Received unhandled trap '{item_data.label}'; skipping.")
         return True
+
+    async def _afflict_party_status(self, ctx: BizHawkClientContext,
+                                    guards: dict[str, tuple[int, bytes, str]],
+                                    status1: int, party_size: int) -> bool:
+        """
+        Write a status1 condition to the first `party_size` occupied party slots (clamped to the
+        actual party). Returns True if the write was applied. The player is in the overworld here
+        (the read is overworld-guarded), so party RAM is stable.
+        """
+        party_address = data.ram_addresses["gPlayerParty"]
+        read_result = await bizhawk.guarded_read(
+            ctx.bizhawk_ctx,
+            [(party_address, POKEMON_STRIDE * PARTY_SIZE, "System Bus")],
+            [guards["IN OVERWORLD"]]
+        )
+        if read_result is None:  # Not in overworld
+            return False
+        party_bytes = read_result[0]
+
+        # Occupied slots have a nonzero personality (plaintext, offset 0).
+        occupied = [
+            i for i in range(PARTY_SIZE)
+            if int.from_bytes(
+                party_bytes[i * POKEMON_STRIDE + POKEMON_PERSONALITY_OFFSET:
+                            i * POKEMON_STRIDE + POKEMON_PERSONALITY_OFFSET + 4], "little") != 0
+        ]
+        targets = occupied[:max(0, party_size)]
+        if not targets:
+            return True  # Empty party (nothing to afflict); don't block the item queue.
+
+        writes = [
+            (party_address + i * POKEMON_STRIDE + POKEMON_STATUS1_OFFSET,
+             status1.to_bytes(4, "little"), "System Bus")
+            for i in targets
+        ]
+        return await bizhawk.guarded_write(ctx.bizhawk_ctx, writes, [guards["IN OVERWORLD"]])
 
     async def handle_wonder_trade(self, ctx: BizHawkClientContext, guards: dict[str, tuple[int, bytes, str]]) -> None:
         """

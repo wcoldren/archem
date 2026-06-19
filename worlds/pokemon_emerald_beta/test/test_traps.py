@@ -1,6 +1,7 @@
 from BaseClasses import ItemClassification
 
 from . import PokemonEmeraldTestBase
+from ..data import data
 
 
 class TestNoTrapsByDefault(PokemonEmeraldTestBase):
@@ -61,3 +62,56 @@ class TestTrapLocationsRemoteDelivery(PokemonEmeraldTestBase):
         # Remote items arrive via handle_received_items; exporting trap_locations would double-fire.
         slot_data = self.world.fill_slot_data()
         self.assertNotIn("trap_locations", slot_data)
+
+
+class TestTrapItemRoster(PokemonEmeraldTestBase):
+    options = {
+        "filler_trap_percentage": 0,
+    }
+
+    def test_poison_and_sleep_traps_registered(self) -> None:
+        by_label = {item.label: item for item in data.items.values()}
+        for label in ("Poison Trap", "Sleep Trap"):
+            self.assertIn(label, by_label, f"{label} missing from item data")
+            self.assertTrue(by_label[label].classification & ItemClassification.trap)
+            self.assertIn("Trap", by_label[label].tags)
+
+
+class TestTrapMagnitudeDefaults(PokemonEmeraldTestBase):
+    options = {}
+
+    def test_default_party_sizes_in_slot_data(self) -> None:
+        slot_data = self.world.fill_slot_data()
+        self.assertEqual(slot_data["poison_trap_party_size"], 1)
+        self.assertEqual(slot_data["sleep_trap_party_size"], 1)
+
+
+class TestTrapMagnitudeNamedValues(PokemonEmeraldTestBase):
+    options = {
+        "poison_trap_party_size": "all",
+        "sleep_trap_party_size": "half",
+    }
+
+    def test_named_party_sizes_resolve(self) -> None:
+        slot_data = self.world.fill_slot_data()
+        self.assertEqual(slot_data["poison_trap_party_size"], 6)
+        self.assertEqual(slot_data["sleep_trap_party_size"], 3)
+
+
+class TestSingleTrapTypeWeighting(PokemonEmeraldTestBase):
+    options = {
+        "filler_trap_percentage": 100,
+        "trap_weights": {"Faint Trap": 0, "Poison Trap": 1, "Sleep Trap": 0},
+    }
+
+    def test_only_weighted_trap_is_placed(self) -> None:
+        from Fill import distribute_items_restrictive
+        distribute_items_restrictive(self.multiworld)
+        placed_traps = [
+            loc.item for loc in self.multiworld.get_locations(self.player)
+            if loc.item is not None and loc.item.player == self.player
+            and (loc.item.classification & ItemClassification.trap)
+        ]
+        self.assertGreater(len(placed_traps), 0, "no traps placed at 100%")
+        for trap in placed_traps:
+            self.assertEqual(trap.name, "Poison Trap")

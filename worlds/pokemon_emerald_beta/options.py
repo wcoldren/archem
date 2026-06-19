@@ -1061,6 +1061,8 @@ class FillerTrapPercentage(Range):
     If no traps have any weight, this option does nothing.
 
     - Faint Trap: causes your party to white out (like a received death link)
+    - Poison Trap: poisons some of your party Pokemon (see Poison Trap Party Size)
+    - Sleep Trap: puts some of your party Pokemon to sleep (see Sleep Trap Party Size)
     """
     display_name = "Filler Trap Percentage"
     default = 0
@@ -1084,6 +1086,34 @@ class TrapWeights(OptionCounter):
     valid_keys = {
         item.label for item in data.items.values() if item.classification & ItemClassification.trap
     }
+
+
+class PoisonTrapPartySize(NamedRange):
+    """
+    How many of your party Pokemon a Poison Trap afflicts (clamped to your actual party size).
+
+    Rolled once per seed; weight the values to let the generator pick the amount, e.g.
+    poison_trap_party_size: {one: 20, half: 30, all: 50}
+    """
+    display_name = "Poison Trap Party Size"
+    range_start = 1
+    range_end = 6
+    special_range_names = {"one": 1, "half": 3, "all": 6}
+    default = 1
+
+
+class SleepTrapPartySize(NamedRange):
+    """
+    How many of your party Pokemon a Sleep Trap afflicts (clamped to your actual party size).
+
+    Rolled once per seed; weight the values to let the generator pick the amount, e.g.
+    sleep_trap_party_size: {one: 20, half: 30, all: 50}
+    """
+    display_name = "Sleep Trap Party Size"
+    range_start = 1
+    range_end = 6
+    special_range_names = {"one": 1, "half": 3, "all": 6}
+    default = 1
 
 
 @dataclass
@@ -1177,6 +1207,8 @@ class PokemonEmeraldOptions(PerGameCommonOptions):
 
     filler_trap_percentage: FillerTrapPercentage
     trap_weights: TrapWeights
+    poison_trap_party_size: PoisonTrapPartySize
+    sleep_trap_party_size: SleepTrapPartySize
 
     start_inventory: PokemonEmeraldStartInventory
 
@@ -1208,6 +1240,8 @@ OPTION_GROUPS = [
         "Traps", [
             FillerTrapPercentage,
             TrapWeights,
+            PoisonTrapPartySize,
+            SleepTrapPartySize,
         ],
     ),
 ]
