@@ -6,12 +6,12 @@ from __future__ import annotations
 import functools
 from typing import TYPE_CHECKING
 
-from .data import (NUM_REAL_SPECIES, OUT_OF_LOGIC_MAPS, PokemonSource, EncounterTableData, LearnsetMove, SpeciesData,
-                   MapData, data)
+from .data import (NUM_REAL_SPECIES, OUT_OF_LOGIC_MAPS, PokemonSource, BaseStats, EncounterTableData, LearnsetMove,
+                   SpeciesData, MapData, data)
 from .items import PokemonEmeraldObtainPokemonEventItem
-from .options import (Goal, HmCompatibility, LevelUpMoves, RandomizeAbilities, RandomizeLegendaryEncounters,
-                      RandomizeMiscPokemon, RandomizeStarters, RandomizeTypes, RandomizeWildPokemon,
-                      TmTutorCompatibility)
+from .options import (Goal, HmCompatibility, LevelUpMoves, RandomizeAbilities, RandomizeBaseStats,
+                      RandomizeLegendaryEncounters, RandomizeMiscPokemon, RandomizeStarters, RandomizeTypes,
+                      RandomizeWildPokemon, TmTutorCompatibility)
 from .util import bool_array_to_int, get_easter_egg, int_to_bool_array
 
 if TYPE_CHECKING:
@@ -228,6 +228,41 @@ def randomize_types(world: PokemonEmeraldWorld) -> None:
                 evolution.types = (type_map[evolution.types[0]], type_map[evolution.types[1]])
                 already_modified.add(evolution.species_id)
                 evolutions += [world.modified_species[evo.species_id] for evo in evolution.evolutions]
+
+
+# Base stats are stored as a single byte each, so keep them in a band the engine can represent.
+_MIN_BASE_STAT = 10
+_MAX_BASE_STAT = 255
+
+
+def randomize_base_stats(world: PokemonEmeraldWorld) -> None:
+    if world.options.base_stats == RandomizeBaseStats.option_vanilla:
+        return
+
+    for species in world.modified_species.values():
+        stats = list(species.base_stats)
+
+        if world.options.base_stats == RandomizeBaseStats.option_shuffle:
+            world.random.shuffle(stats)
+        elif world.options.base_stats == RandomizeBaseStats.option_random_keep_bst:
+            # Redistribute the existing total across the six stats, keeping each within the byte band.
+            total = sum(stats)
+            stats = [_MIN_BASE_STAT] * 6
+            remaining = total - sum(stats)
+            if remaining > 0:
+                # Distribute the remainder one point at a time into stats that still have headroom.
+                headroom = [_MAX_BASE_STAT - _MIN_BASE_STAT] * 6
+                for _ in range(remaining):
+                    candidates = [i for i in range(6) if headroom[i] > 0]
+                    if not candidates:
+                        break
+                    choice = world.random.choice(candidates)
+                    stats[choice] += 1
+                    headroom[choice] -= 1
+        else:  # option_completely_random
+            stats = [world.random.randint(_MIN_BASE_STAT, _MAX_BASE_STAT) for _ in range(6)]
+
+        species.base_stats = BaseStats(*stats)
 
 
 _encounter_subcategory_ranges: dict[PokemonSource, dict[range, str | None]] = {

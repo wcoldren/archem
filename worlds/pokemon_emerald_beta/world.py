@@ -23,8 +23,8 @@ from .locations import (PokemonEmeraldLocation, create_location_label_to_id_map,
 from .opponents import randomize_opponent_parties
 from .options import (Goal, DarkCavesRequireFlash, HmRequirements, ItemPoolType, PokemonEmeraldOptions,
                       RandomizeWildPokemon, RandomizeBadges, RandomizeHms, NormanRequirement, OPTION_GROUPS)
-from .pokemon import (get_random_move, get_species_id_by_label, randomize_abilities, randomize_learnsets,
-                      randomize_legendary_encounters, randomize_misc_pokemon, randomize_starters,
+from .pokemon import (get_random_move, get_species_id_by_label, randomize_abilities, randomize_base_stats,
+                      randomize_learnsets, randomize_legendary_encounters, randomize_misc_pokemon, randomize_starters,
                       randomize_tm_hm_compatibility,randomize_types, randomize_wild_encounters)
 from .scaling import perform_level_scaling
 from .rom import PokemonEmeraldProcedurePatch, write_tokens
@@ -663,6 +663,7 @@ class PokemonEmeraldWorld(World):
         self.auth = self.random.randbytes(16)
 
         randomize_types(self)
+        randomize_base_stats(self)
 
     def generate_output(self, output_directory: str) -> None:
         self.modified_trainers = copy.deepcopy(data.trainers)

@@ -432,6 +432,23 @@ class RandomizeMiscPokemon(Choice):
     option_completely_random = 5
 
 
+class RandomizeBaseStats(Choice):
+    """
+    Randomizes the base stats of every pokemon.
+
+    - Vanilla: Base stats are unchanged
+    - Shuffle: Each species' six base stats are shuffled among themselves (BST unchanged)
+    - Random (Keep BST): Each species' base stat total is redistributed randomly across its stats
+    - Random (Completely Random): Each base stat is rolled independently within a sane band
+    """
+    display_name = "Randomize Base Stats"
+    default = 0
+    option_vanilla = 0
+    option_shuffle = 1
+    option_random_keep_bst = 2
+    option_completely_random = 3
+
+
 class RandomizeTypes(Choice):
     """
     Randomizes the type(s) of every pokemon. Each species will have the same number of types.
@@ -1059,6 +1076,7 @@ class PokemonEmeraldOptions(PerGameCommonOptions):
     force_fully_evolved: ForceFullyEvolved
     legendary_encounters: RandomizeLegendaryEncounters
     misc_pokemon: RandomizeMiscPokemon
+    base_stats: RandomizeBaseStats
     types: RandomizeTypes
     abilities: RandomizeAbilities
     ability_blacklist: AbilityBlacklist
@@ -1116,5 +1134,21 @@ OPTION_GROUPS = [
         "Item & Location Options", [
             PokemonEmeraldStartInventory,
         ], True,
+    ),
+    OptionGroup(
+        "Pokemon", [
+            RandomizeBaseStats,
+            RandomizeTypes,
+            RandomizeAbilities,
+            AbilityBlacklist,
+            RandomizeWildPokemon,
+            WildEncounterBlacklist,
+            RandomizeStarters,
+            StarterBlacklist,
+            RandomizeTrainerParties,
+            TrainerPartyBlacklist,
+            RandomizeLegendaryEncounters,
+            RandomizeMiscPokemon,
+        ],
     ),
 ]

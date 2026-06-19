@@ -751,6 +751,9 @@ def _set_encounter_tables(world: PokemonEmeraldWorld, patch: PokemonEmeraldProce
 
 def _set_species_info(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch, easter_egg: tuple[int, int]) -> None:
     for species in world.modified_species.values():
+        # Base stats occupy the first six bytes of struct SpeciesInfo, in the same order as BaseStats.
+        for i, stat in enumerate(species.base_stats):
+            patch.write_token(APTokenTypes.WRITE, species.address + i, struct.pack("<B", stat))
         patch.write_token(APTokenTypes.WRITE, species.address + 6, struct.pack("<B", species.types[0]))
         patch.write_token(APTokenTypes.WRITE, species.address + 7, struct.pack("<B", species.types[1]))
         patch.write_token(APTokenTypes.WRITE, species.address + 8, struct.pack("<B", species.catch_rate))
