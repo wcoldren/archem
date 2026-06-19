@@ -10,8 +10,8 @@ from .data import (NUM_REAL_SPECIES, OUT_OF_LOGIC_MAPS, PokemonSource, BaseStats
                    SpeciesData, MapData, data)
 from .items import PokemonEmeraldObtainPokemonEventItem
 from .options import (Goal, HmCompatibility, LevelUpMoves, RandomizeAbilities, RandomizeBaseStats,
-                      RandomizeLegendaryEncounters, RandomizeMiscPokemon, RandomizeStarters, RandomizeTypes,
-                      RandomizeWildPokemon, TmTutorCompatibility)
+                      RandomizeEvolutions, RandomizeLegendaryEncounters, RandomizeMiscPokemon, RandomizeStarters,
+                      RandomizeTypes, RandomizeWildPokemon, TmTutorCompatibility)
 from .util import bool_array_to_int, get_easter_egg, int_to_bool_array
 
 if TYPE_CHECKING:
@@ -263,6 +263,33 @@ def randomize_base_stats(world: PokemonEmeraldWorld) -> None:
             stats = [world.random.randint(_MIN_BASE_STAT, _MAX_BASE_STAT) for _ in range(6)]
 
         species.base_stats = BaseStats(*stats)
+
+
+def randomize_evolutions(world: PokemonEmeraldWorld) -> None:
+    if world.options.evolutions == RandomizeEvolutions.option_vanilla:
+        return
+
+    should_match_bst = world.options.evolutions == RandomizeEvolutions.option_match_base_stats
+
+    for species in world.modified_species.values():
+        if not species.evolutions:
+            continue
+
+        for i, evolution in enumerate(species.evolutions):
+            # Match against the vanilla target's BST so behavior is stable even if base stats are randomized.
+            original_target_bst = sum(data.species[evolution.species_id].base_stats)
+
+            candidates = [
+                candidate
+                for candidate in world.modified_species.values()
+                if candidate.species_id != species.species_id
+            ]
+            if should_match_bst:
+                candidates = filter_species_by_nearby_bst(candidates, original_target_bst)
+
+            new_target = world.random.choice(candidates)
+            # Keep the method/param (level/stone/friendship trigger); only swap the target species.
+            species.evolutions[i] = evolution._replace(species_id=new_target.species_id)
 
 
 _encounter_subcategory_ranges: dict[PokemonSource, dict[range, str | None]] = {

@@ -432,6 +432,22 @@ class RandomizeMiscPokemon(Choice):
     option_completely_random = 5
 
 
+class RandomizeEvolutions(Choice):
+    """
+    Randomizes the species every pokemon evolves into. The evolution method and trigger
+    (level/stone/friendship/etc.) are preserved, so there are no dead-end evolutions.
+
+    - Vanilla: Evolutions are unchanged
+    - Completely Random: Each evolution points at a random species
+    - Match Base Stats: Each evolution points at a species with a similar base stat total
+    """
+    display_name = "Randomize Evolutions"
+    default = 0
+    option_vanilla = 0
+    option_completely_random = 1
+    option_match_base_stats = 2
+
+
 class RandomizeBaseStats(Choice):
     """
     Randomizes the base stats of every pokemon.
@@ -1077,6 +1093,7 @@ class PokemonEmeraldOptions(PerGameCommonOptions):
     legendary_encounters: RandomizeLegendaryEncounters
     misc_pokemon: RandomizeMiscPokemon
     base_stats: RandomizeBaseStats
+    evolutions: RandomizeEvolutions
     types: RandomizeTypes
     abilities: RandomizeAbilities
     ability_blacklist: AbilityBlacklist
@@ -1138,6 +1155,7 @@ OPTION_GROUPS = [
     OptionGroup(
         "Pokemon", [
             RandomizeBaseStats,
+            RandomizeEvolutions,
             RandomizeTypes,
             RandomizeAbilities,
             AbilityBlacklist,
