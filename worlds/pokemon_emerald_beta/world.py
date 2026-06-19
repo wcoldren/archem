@@ -513,6 +513,18 @@ class PokemonEmeraldWorld(World):
 
                 self.item_pool.append(item)
 
+        # Replace a percentage of filler items with traps, weighted by trap type
+        trap_items = [item_data for item_data in data.items.values()
+                      if item_data.classification & ItemClassification.trap]
+        trap_weights = [self.options.trap_weights.get(trap.label, 0) for trap in trap_items]
+        trap_percentage = self.options.filler_trap_percentage.value if any(trap_weights) else 0
+        if trap_percentage:
+            for i, item in enumerate(self.item_pool):
+                if item.classification == ItemClassification.filler and "Unique" not in item.tags:
+                    if self.random.random() * 100 < trap_percentage:
+                        trap_label = self.random.choices(trap_items, trap_weights)[0].label
+                        self.item_pool[i] = self.create_item(trap_label)
+
         self.multiworld.itempool += self.item_pool
 
         set_free_fly(self)
@@ -785,6 +797,7 @@ class PokemonEmeraldWorld(World):
             "death_link",
             "normalize_encounter_rates",
             "dexsanity_encounter_types",
+            "filler_trap_percentage",
         )
         slot_data["free_fly_location_id"] = self.free_fly_location_id
         slot_data["terra_cave_location"] = self.get_location("TERRA_CAVE_LOCATION").item.name

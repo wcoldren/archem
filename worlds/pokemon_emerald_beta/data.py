@@ -43,6 +43,11 @@ Those encounter slots should be ignored for logical access to a species.
 
 NUM_REAL_SPECIES = 386
 
+# Synthetic item ids for AP-only items (e.g. traps) that have no in-game ITEM_ constant.
+# Real game item ids end at 376 (ITEM_OLD_SEA_MAP); this range is well clear of them and the
+# ITEM_LIST_END (65535) sentinel, and still fits the u16 received-item slot.
+TRAP_ITEM_ID_BASE = 1000
+
 
 class Warp:
     """
@@ -533,6 +538,7 @@ def _init() -> None:
     items_json = load_json_data("items.json")
 
     data.items = {}
+    next_synthetic_item_id = TRAP_ITEM_ID_BASE
     for item_constant_name, attributes in items_json.items():
         item_classification = None
         if attributes["classification"] == "PROGRESSION":
@@ -546,9 +552,16 @@ def _init() -> None:
         else:
             raise ValueError(f"Unknown classification {attributes['classification']} for item {item_constant_name}")
 
-        data.items[data.constants[item_constant_name]] = ItemData(
+        # AP-only items (traps) have no in-game ITEM_ constant; give them a synthetic id.
+        if item_constant_name in data.constants:
+            item_id = data.constants[item_constant_name]
+        else:
+            item_id = next_synthetic_item_id
+            next_synthetic_item_id += 1
+
+        data.items[item_id] = ItemData(
             attributes["label"],
-            data.constants[item_constant_name],
+            item_id,
             attributes["modern_id"],
             item_classification,
             frozenset(attributes["tags"])

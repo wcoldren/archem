@@ -169,18 +169,26 @@ def write_tokens(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch
 
         # Set local item values
         if not world.options.remote_items and location.item.player == world.player:
+            # Traps have no real in-game item id; write the AP sentinel so the game doesn't try to
+            # grant a bogus item. (Delivering the trap effect for a LOCAL trap requires the client to
+            # watch this location's flag; that path is not yet wired up.)
+            if "Trap" in location.item.tags:
+                local_item_value = data.constants["ITEM_ARCHIPELAGO_PROGRESSION"]
+            else:
+                local_item_value = location.item.code - BASE_OFFSET
+
             if type(location.item_address) is int:
                 patch.write_token(
                     APTokenTypes.WRITE,
                     location.item_address,
-                    struct.pack("<H", location.item.code - BASE_OFFSET)
+                    struct.pack("<H", local_item_value)
                 )
             elif type(location.item_address) is list:
                 for address in location.item_address:
                     patch.write_token(
                         APTokenTypes.WRITE,
                         address,
-                        struct.pack("<H", location.item.code - BASE_OFFSET)
+                        struct.pack("<H", local_item_value)
                     )
         else:
             if type(location.item_address) is int:

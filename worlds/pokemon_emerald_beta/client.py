@@ -14,6 +14,8 @@ import Utils
 import worlds._bizhawk as bizhawk
 from worlds._bizhawk.client import BizHawkClient
 
+from BaseClasses import ItemClassification
+
 from .data import GAME_NAME, BASE_OFFSET, POKEDEX_OFFSET, data
 from .options import Goal, RemoteItems
 from .util import pokemon_data_to_json, json_to_pokemon_data
@@ -543,6 +545,21 @@ class PokemonEmeraldClient(BizHawkClient):
         # fill it with the next item
         if num_received_items < len(ctx.items_received) and received_item_is_empty:
             next_item = ctx.items_received[num_received_items]
+            item_id = next_item.item - BASE_OFFSET
+            item_data = data.items.get(item_id)
+
+            # Traps have no in-game item id and are applied client-side. Apply the effect and advance
+            # the received-items counter directly, without putting an item in the received-item struct.
+            if item_data is not None and item_data.classification & ItemClassification.trap:
+                applied = await self._apply_trap(ctx, item_data, guards)
+                if applied:
+                    await bizhawk.guarded_write(
+                        ctx.bizhawk_ctx,
+                        [(sb1_address + 0x3778, (num_received_items + 1).to_bytes(2, "little"), "System Bus")],
+                        [guards["IN OVERWORLD"], guards["SAVE BLOCK 1"]]
+                    )
+                return
+
             should_display = 1 if next_item.flags & 1 or next_item.player == ctx.slot else 0
             await bizhawk.write(ctx.bizhawk_ctx, [
                 (received_item_address + 0, (next_item.item - BASE_OFFSET).to_bytes(2, "little"), "System Bus"),
@@ -550,6 +567,29 @@ class PokemonEmeraldClient(BizHawkClient):
                 (received_item_address + 4, [1], "System Bus"),
                 (received_item_address + 5, [should_display], "System Bus"),
             ])
+
+    async def _apply_trap(self, ctx: BizHawkClientContext, item_data,
+                          guards: dict[str, tuple[int, bytes, str]]) -> bool:
+        """
+        Apply a trap's effect client-side. Returns True if the effect was applied (so the caller can
+        advance the received-items counter). Each trap label maps to one effect.
+        """
+        from CommonClient import logger
+
+        if item_data.label == "Faint Trap":
+            # Reuse the engine's death-link whiteout queue: the next safe moment, the party whites out.
+            success = await bizhawk.guarded_write(
+                ctx.bizhawk_ctx,
+                [(data.ram_addresses["gArchipelagoDeathLinkQueued"], [1], "System Bus")],
+                [guards["IN OVERWORLD"], guards["SAVE BLOCK 1"]]
+            )
+            if success:
+                logger.info("Faint Trap received!")
+            return success
+
+        # Unknown trap type: advance past it rather than blocking the item queue forever.
+        logger.warning(f"Received unhandled trap '{item_data.label}'; skipping.")
+        return True
 
     async def handle_wonder_trade(self, ctx: BizHawkClientContext, guards: dict[str, tuple[int, bytes, str]]) -> None:
         """

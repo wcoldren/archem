@@ -1777,5 +1777,11 @@
     "classification": "USEFUL",
     "tags": ["TM"],
     "modern_id": 377
+  },
+  "FAINT_TRAP": {
+    "label": "Faint Trap",
+    "classification": "TRAP",
+    "tags": ["Trap"],
+    "modern_id": null
   }
 }
