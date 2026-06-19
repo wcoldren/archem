@@ -804,6 +804,21 @@ class PokemonEmeraldWorld(World):
         slot_data["marine_cave_location"] = self.get_location("MARINE_CAVE_LOCATION").item.name
         slot_data["hm_requirements"] = self.hm_requirements
         slot_data["world_version"] = self.world_version
+
+        # When items aren't remote, the ROM writes the AP sentinel for our own trap locations and
+        # grants no item (see rom.py), so the client must watch each trap location's flag and apply
+        # the effect itself. Map flag_id -> trap item name for that watcher. With remote_items on,
+        # traps arrive via the normal received-items path (handle_received_items) — omit this to
+        # avoid double-firing.
+        if not self.options.remote_items:
+            trap_locations: dict[int, str] = {}
+            for location in self.multiworld.get_locations(self.player):
+                if location.is_event or location.item is None:
+                    continue
+                if location.item.player == self.player and "Trap" in location.item.tags:
+                    trap_locations[location.address - BASE_OFFSET] = location.item.name
+            slot_data["trap_locations"] = trap_locations
+
         return slot_data
 
     def create_item(self, name: str) -> PokemonEmeraldItem:

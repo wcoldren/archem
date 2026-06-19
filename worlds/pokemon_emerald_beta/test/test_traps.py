@@ -30,3 +30,34 @@ class TestTrapsBlendedIntoFiller(PokemonEmeraldTestBase):
         remaining_filler = [item for item in own_items
                             if item.classification == ItemClassification.filler and "Unique" not in item.tags]
         self.assertEqual(len(remaining_filler), 0, "filler items remained at 100% trap percentage")
+
+
+class TestTrapLocationsLocalDelivery(PokemonEmeraldTestBase):
+    options = {
+        "filler_trap_percentage": 100,
+        "remote_items": "false",
+    }
+
+    def test_trap_locations_populated_when_local(self) -> None:
+        # With local items, the client needs flag_id -> trap label to apply traps itself.
+        # WorldTestBase.setUp doesn't fill, so place items before reading the placement-derived map.
+        from Fill import distribute_items_restrictive
+        distribute_items_restrictive(self.multiworld)
+        slot_data = self.world.fill_slot_data()
+        self.assertIn("trap_locations", slot_data)
+        trap_locations = slot_data["trap_locations"]
+        self.assertGreater(len(trap_locations), 0, "no local trap locations exported")
+        for name in trap_locations.values():
+            self.assertIn("Trap", self.world.create_item(name).tags)
+
+
+class TestTrapLocationsRemoteDelivery(PokemonEmeraldTestBase):
+    options = {
+        "filler_trap_percentage": 100,
+        "remote_items": "true",
+    }
+
+    def test_trap_locations_omitted_when_remote(self) -> None:
+        # Remote items arrive via handle_received_items; exporting trap_locations would double-fire.
+        slot_data = self.world.fill_slot_data()
+        self.assertNotIn("trap_locations", slot_data)

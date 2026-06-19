@@ -132,6 +132,8 @@ class PokemonEmeraldClient(BizHawkClient):
     patch_suffix = ".apemeraldbeta"
 
     local_checked_locations: set[int]
+    applied_trap_locations: set[int]
+    _trap_history_synced: bool
     local_set_events: dict[str, bool]
     local_found_key_items: dict[str, bool]
     local_defeated_legendaries: dict[str, bool]
@@ -152,6 +154,8 @@ class PokemonEmeraldClient(BizHawkClient):
 
     def initialize_client(self):
         self.local_checked_locations = set()
+        self.applied_trap_locations = set()
+        self._trap_history_synced = False
         self.local_set_events = {}
         self.local_found_key_items = {}
         self.local_defeated_legendaries = {}
@@ -298,6 +302,18 @@ class PokemonEmeraldClient(BizHawkClient):
             defeated_legendaries = {legendary_name: False for legendary_name in LEGENDARY_NAMES.values()}
             caught_legendaries = {legendary_name: False for legendary_name in LEGENDARY_NAMES.values()}
 
+            # Local traps (remote_items off): the world exports flag_id -> trap label for our own
+            # trap locations. Apply each once when its flag is seen set. JSON keys arrive as strings.
+            trap_map = {int(k): v for k, v in ctx.slot_data.get("trap_locations", {}).items()}
+            if trap_map and not self._trap_history_synced:
+                # Seed already-checked trap locations as applied WITHOUT firing them, so reconnecting
+                # doesn't re-whiteout for every trap already triggered. slot_data and checked_locations
+                # arrive together on Connect, so checked_locations is populated by now.
+                for loc_id in ctx.checked_locations:
+                    if (loc_id - BASE_OFFSET) in trap_map:
+                        self.applied_trap_locations.add(loc_id - BASE_OFFSET)
+                self._trap_history_synced = True
+
             # Check set flags
             for byte_i, byte in enumerate(flag_bytes):
                 for i in range(8):
@@ -322,6 +338,12 @@ class PokemonEmeraldClient(BizHawkClient):
 
                         if flag_id in KEY_LOCATION_FLAG_MAP:
                             local_found_key_items[KEY_LOCATION_FLAG_MAP[flag_id]] = True
+
+                        if flag_id in trap_map and flag_id not in self.applied_trap_locations:
+                            label = trap_map[flag_id]
+                            item_data = next(d for d in data.items.values() if d.label == label)
+                            if await self._apply_trap(ctx, item_data, guards):
+                                self.applied_trap_locations.add(flag_id)
 
             # Check pokedex
             if ctx.slot_data["dexsanity"] == Toggle.option_true:
