@@ -244,6 +244,12 @@ def write_tokens(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch
     player_name_ids: dict[str, int] = {world.player_name: 0}
     item_name_offsets: dict[str, int] = {}
     next_item_name_offset = 0
+    # The engine's pickup-message routine (RE: ROM 0x0809CB4C) suppresses the text box for any
+    # gArchipelagoNameTable entry whose player-name id is 0 — that is reserved for "own item, the
+    # client will message it". Own TRAPS get no client received-item message, so to name them we
+    # point their entry at a NON-ZERO slot holding the local player's own name; the engine then
+    # takes its "found {player}'s {item}" path. The slot is registered lazily on first own trap.
+    own_trap_name_id: "int | None" = None
     for i, (flag, item_player, item_name, is_trap) in enumerate(sorted(location_info, key=lambda t: t[0])):
         # The player's own items are normally set in the table with the value 0 to indicate the game should not show
         # any message (the message for receiving an item will pop up when the client eventually gives it to them).
@@ -268,10 +274,25 @@ def write_tokens(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch
                 struct.pack("<B", 0)
             )
         else:
-            # Own traps belong to the local player (name id 0, written at init); other players' items
-            # need their name registered and an id assigned.
+            # Own traps (this branch is only reached for them via name_own_trap) must point at a
+            # non-zero player-name slot or the engine suppresses the box. Register the local player's
+            # own name at a fresh slot once, then reuse it; other players' items register their own.
             if item_player == world.player:
-                player_name_id = 0
+                if own_trap_name_id is None:
+                    # Only space for 250 player names; bail to the suppressed path if exhausted.
+                    if len(player_name_ids) >= 250:
+                        continue
+                    own_trap_name_id = len(player_name_ids)
+                    # Synthetic key: occupies the slot for id allocation without colliding with a
+                    # real player literally named the same (own-name is already keyed at id 0).
+                    player_name_ids[f"\x00own\x00{world.player_name}"] = own_trap_name_id
+                    for j, b in enumerate(encode_string(world.player_name, 17)):
+                        patch.write_token(
+                            APTokenTypes.WRITE,
+                            data.rom_addresses["gArchipelagoPlayerNames"] + (own_trap_name_id * 17) + j,
+                            struct.pack("<B", b)
+                        )
+                player_name_id = own_trap_name_id
             else:
                 player_name = world.multiworld.get_player_name(item_player)
 

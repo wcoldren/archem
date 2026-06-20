@@ -115,3 +115,61 @@ class TestSingleTrapTypeWeighting(PokemonEmeraldTestBase):
         self.assertGreater(len(placed_traps), 0, "no traps placed at 100%")
         for trap in placed_traps:
             self.assertEqual(trap.name, "Poison Trap")
+
+
+class TestOwnTrapNaming(PokemonEmeraldTestBase):
+    # remote_items off -> own traps are local pickups whose pickup box is driven by
+    # gArchipelagoNameTable. The engine's message routine (RE: games/emerald/re/NAMING.md,
+    # ROM 0x0809CB4C) suppresses the box for any entry with player-name id 0, so own traps
+    # must be written with a NON-ZERO id pointing at the local player's own name. This guards
+    # rom.py from regressing to the id-0 (blank box) behaviour.
+    options = {
+        "filler_trap_percentage": 100,
+        "remote_items": "false",
+    }
+
+    def test_own_traps_use_nonzero_player_name_id(self) -> None:
+        from Fill import distribute_items_restrictive
+        from ..data import data
+        from ..rom import write_tokens
+
+        distribute_items_restrictive(self.multiworld)
+
+        writes: "list[tuple[int, bytes]]" = []
+
+        class _CapturePatch:
+            def write_token(self, _token_type, address, data_bytes):
+                writes.append((address, data_bytes))
+
+        # The gArchipelagoNameTable block runs near the top of write_tokens, before the later
+        # _set_* sections that need generate_output-stage state (modified_misc_pokemon, etc.) we
+        # don't set up here. So the name-table writes are fully captured before any such
+        # AttributeError; tolerate it and assert on what was captured. (If the block ever stopped
+        # running, the assertions below would fail loudly — no silent pass.)
+        try:
+            write_tokens(self.world, _CapturePatch())
+        except AttributeError:
+            pass
+
+        nt_base = data.rom_addresses["gArchipelagoNameTable"]
+        item_off: "dict[int, int]" = {}
+        pid: "dict[int, int]" = {}
+        for address, data_bytes in writes:
+            rel = address - nt_base
+            if rel < 0 or rel >= 5 * 2000:
+                continue
+            entry, field = divmod(rel, 5)
+            if field == 2:
+                item_off[entry] = int.from_bytes(data_bytes[:2], "little")
+            elif field == 4:
+                pid[entry] = data_bytes[0]
+
+        # Single player + remote_items off: every non-zero-id entry is a named own trap.
+        named_own = [e for e, p in pid.items() if p != 0]
+        self.assertGreater(len(named_own), 0,
+                           "own traps must get a non-zero player-name id, else the engine "
+                           "suppresses the pickup box (blank name)")
+        # No entry should carry a real item name while still suppressed at id 0 (the old bug).
+        named_but_suppressed = [e for e, off in item_off.items() if off != 0 and pid.get(e, 0) == 0]
+        self.assertEqual(named_but_suppressed, [],
+                         "name-table entries with an item name must use a non-zero player-name id")
