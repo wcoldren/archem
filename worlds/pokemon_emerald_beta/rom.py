@@ -215,9 +215,11 @@ def write_tokens(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch
             # Creates a list of item information to store in tables later. Those tables are used to display the item and
             # player name in a text box. In the case of not enough space, the game will default to "found an ARCHIPELAGO
             # ITEM"
+            # This branch can hold another world's item (multiworld), which has no `tags`; only
+            # our own items carry the "Trap" tag, so a foreign item is never a trap here.
             location_info.append(
                 (location.address - BASE_OFFSET, location.item.player, location.item.name,
-                 "Trap" in location.item.tags))
+                 "Trap" in getattr(location.item, "tags", ())))
 
     if world.options.trainersanity:
         # Duplicate entries for rival fights
@@ -236,7 +238,7 @@ def write_tokens(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch
                 data.constants["TRAINER_FLAGS_START"] + data.constants[trainer],
                 location.item.player,
                 location.item.name,
-                "Trap" in location.item.tags
+                "Trap" in getattr(location.item, "tags", ())
             ) for trainer in alternates)
 
     player_name_ids: dict[str, int] = {world.player_name: 0}
