@@ -5,6 +5,7 @@ import copy
 import orjson
 import random
 import time
+from math import ceil
 from typing import TYPE_CHECKING
 import uuid
 
@@ -623,15 +624,15 @@ class PokemonEmeraldClient(BizHawkClient):
             return success
 
         if item_data.label == "Poison Trap":
-            count = ctx.slot_data.get("poison_trap_party_size", 1)
-            success = await self._afflict_party_status(ctx, guards, STATUS1_POISON, count)
+            percent = ctx.slot_data.get("poison_trap_party_portion", 1)
+            success = await self._afflict_party_status(ctx, guards, STATUS1_POISON, percent)
             if success:
                 logger.info("Poison Trap received!")
             return success
 
         if item_data.label == "Sleep Trap":
-            count = ctx.slot_data.get("sleep_trap_party_size", 1)
-            success = await self._afflict_party_status(ctx, guards, STATUS1_SLEEP_TURNS, count)
+            percent = ctx.slot_data.get("sleep_trap_party_portion", 1)
+            success = await self._afflict_party_status(ctx, guards, STATUS1_SLEEP_TURNS, percent)
             if success:
                 logger.info("Sleep Trap received!")
             return success
@@ -642,11 +643,12 @@ class PokemonEmeraldClient(BizHawkClient):
 
     async def _afflict_party_status(self, ctx: BizHawkClientContext,
                                     guards: dict[str, tuple[int, bytes, str]],
-                                    status1: int, party_size: int) -> bool:
+                                    status1: int, percent: int) -> bool:
         """
-        Write a status1 condition to the first `party_size` occupied party slots (clamped to the
-        actual party). Returns True if the write was applied. The player is in the overworld here
-        (the read is overworld-guarded), so party RAM is stable.
+        Write a status1 condition to the leading occupied party slots. The number afflicted is a
+        portion of the CURRENT party: ceil(percent/100 * party), always at least one and never
+        more than the party. Returns True if the write was applied. The player is in the overworld
+        here (the read is overworld-guarded), so party RAM is stable.
         """
         party_address = data.ram_addresses["gPlayerParty"]
         read_result = await bizhawk.guarded_read(
@@ -665,9 +667,12 @@ class PokemonEmeraldClient(BizHawkClient):
                 party_bytes[i * POKEMON_STRIDE + POKEMON_PERSONALITY_OFFSET:
                             i * POKEMON_STRIDE + POKEMON_PERSONALITY_OFFSET + 4], "little") != 0
         ]
-        targets = occupied[:max(0, party_size)]
-        if not targets:
+        if not occupied:
             return True  # Empty party (nothing to afflict); don't block the item queue.
+
+        # Round up so any nonzero portion hits at least one mon; cap at the actual party.
+        count = max(1, min(len(occupied), ceil(percent / 100 * len(occupied))))
+        targets = occupied[:count]
 
         writes = [
             (party_address + i * POKEMON_STRIDE + POKEMON_STATUS1_OFFSET,

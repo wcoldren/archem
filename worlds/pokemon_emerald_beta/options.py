@@ -1088,31 +1088,39 @@ class TrapWeights(OptionCounter):
     }
 
 
-class PoisonTrapPartySize(NamedRange):
+class PoisonTrapPartyPortion(NamedRange):
     """
-    How many of your party Pokemon a Poison Trap afflicts (clamped to your actual party size).
+    What portion of your party a Poison Trap afflicts, as a percentage of your CURRENT party.
+
+    The count is computed live from your party size: ceil(percent/100 * party), always at least
+    one Pokemon and never more than your party. "one" hits a single Pokemon; "half" hits half of
+    your current party (rounded up); "all" hits everyone.
 
     Rolled once per seed; weight the values to let the generator pick the amount, e.g.
-    poison_trap_party_size: {one: 20, half: 30, all: 50}
+    poison_trap_party_portion: {one: 20, half: 30, all: 50}
     """
-    display_name = "Poison Trap Party Size"
+    display_name = "Poison Trap Party Portion"
     range_start = 1
-    range_end = 6
-    special_range_names = {"one": 1, "half": 3, "all": 6}
+    range_end = 100
+    special_range_names = {"one": 1, "half": 50, "all": 100}
     default = 1
 
 
-class SleepTrapPartySize(NamedRange):
+class SleepTrapPartyPortion(NamedRange):
     """
-    How many of your party Pokemon a Sleep Trap afflicts (clamped to your actual party size).
+    What portion of your party a Sleep Trap afflicts, as a percentage of your CURRENT party.
+
+    The count is computed live from your party size: ceil(percent/100 * party), always at least
+    one Pokemon and never more than your party. "one" hits a single Pokemon; "half" hits half of
+    your current party (rounded up); "all" hits everyone.
 
     Rolled once per seed; weight the values to let the generator pick the amount, e.g.
-    sleep_trap_party_size: {one: 20, half: 30, all: 50}
+    sleep_trap_party_portion: {one: 20, half: 30, all: 50}
     """
-    display_name = "Sleep Trap Party Size"
+    display_name = "Sleep Trap Party Portion"
     range_start = 1
-    range_end = 6
-    special_range_names = {"one": 1, "half": 3, "all": 6}
+    range_end = 100
+    special_range_names = {"one": 1, "half": 50, "all": 100}
     default = 1
 
 
@@ -1207,8 +1215,8 @@ class PokemonEmeraldOptions(PerGameCommonOptions):
 
     filler_trap_percentage: FillerTrapPercentage
     trap_weights: TrapWeights
-    poison_trap_party_size: PoisonTrapPartySize
-    sleep_trap_party_size: SleepTrapPartySize
+    poison_trap_party_portion: PoisonTrapPartyPortion
+    sleep_trap_party_portion: SleepTrapPartyPortion
 
     start_inventory: PokemonEmeraldStartInventory
 
@@ -1240,8 +1248,8 @@ OPTION_GROUPS = [
         "Traps", [
             FillerTrapPercentage,
             TrapWeights,
-            PoisonTrapPartySize,
-            SleepTrapPartySize,
+            PoisonTrapPartyPortion,
+            SleepTrapPartyPortion,
         ],
     ),
 ]

@@ -80,22 +80,22 @@ class TestTrapItemRoster(PokemonEmeraldTestBase):
 class TestTrapMagnitudeDefaults(PokemonEmeraldTestBase):
     options = {}
 
-    def test_default_party_sizes_in_slot_data(self) -> None:
+    def test_default_party_portions_in_slot_data(self) -> None:
         slot_data = self.world.fill_slot_data()
-        self.assertEqual(slot_data["poison_trap_party_size"], 1)
-        self.assertEqual(slot_data["sleep_trap_party_size"], 1)
+        self.assertEqual(slot_data["poison_trap_party_portion"], 1)
+        self.assertEqual(slot_data["sleep_trap_party_portion"], 1)
 
 
 class TestTrapMagnitudeNamedValues(PokemonEmeraldTestBase):
     options = {
-        "poison_trap_party_size": "all",
-        "sleep_trap_party_size": "half",
+        "poison_trap_party_portion": "all",
+        "sleep_trap_party_portion": "half",
     }
 
-    def test_named_party_sizes_resolve(self) -> None:
+    def test_named_party_portions_resolve(self) -> None:
         slot_data = self.world.fill_slot_data()
-        self.assertEqual(slot_data["poison_trap_party_size"], 6)
-        self.assertEqual(slot_data["sleep_trap_party_size"], 3)
+        self.assertEqual(slot_data["poison_trap_party_portion"], 100)
+        self.assertEqual(slot_data["sleep_trap_party_portion"], 50)
 
 
 class TestSingleTrapTypeWeighting(PokemonEmeraldTestBase):
