@@ -513,6 +513,18 @@ class PokemonEmeraldWorld(World):
 
                 self.item_pool.append(item)
 
+        # Replace a percentage of filler items with traps, weighted by trap type
+        trap_items = [item_data for item_data in data.items.values()
+                      if item_data.classification & ItemClassification.trap]
+        trap_weights = [self.options.trap_weights.get(trap.label, 0) for trap in trap_items]
+        trap_percentage = self.options.filler_trap_percentage.value if any(trap_weights) else 0
+        if trap_percentage:
+            for i, item in enumerate(self.item_pool):
+                if item.classification == ItemClassification.filler and "Unique" not in item.tags:
+                    if self.random.random() * 100 < trap_percentage:
+                        trap_label = self.random.choices(trap_items, trap_weights)[0].label
+                        self.item_pool[i] = self.create_item(trap_label)
+
         self.multiworld.itempool += self.item_pool
 
         set_free_fly(self)
@@ -785,12 +797,30 @@ class PokemonEmeraldWorld(World):
             "death_link",
             "normalize_encounter_rates",
             "dexsanity_encounter_types",
+            "filler_trap_percentage",
+            "poison_trap_party_portion",
+            "sleep_trap_party_portion",
         )
         slot_data["free_fly_location_id"] = self.free_fly_location_id
         slot_data["terra_cave_location"] = self.get_location("TERRA_CAVE_LOCATION").item.name
         slot_data["marine_cave_location"] = self.get_location("MARINE_CAVE_LOCATION").item.name
         slot_data["hm_requirements"] = self.hm_requirements
         slot_data["world_version"] = self.world_version
+
+        # When items aren't remote, the ROM writes the AP sentinel for our own trap locations and
+        # grants no item (see rom.py), so the client must watch each trap location's flag and apply
+        # the effect itself. Map flag_id -> trap item name for that watcher. With remote_items on,
+        # traps arrive via the normal received-items path (handle_received_items) — omit this to
+        # avoid double-firing.
+        if not self.options.remote_items:
+            trap_locations: dict[int, str] = {}
+            for location in self.multiworld.get_locations(self.player):
+                if location.is_event or location.item is None:
+                    continue
+                if location.item.player == self.player and "Trap" in location.item.tags:
+                    trap_locations[location.address - BASE_OFFSET] = location.item.name
+            slot_data["trap_locations"] = trap_locations
+
         return slot_data
 
     def create_item(self, name: str) -> PokemonEmeraldItem:

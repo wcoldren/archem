@@ -4,9 +4,9 @@ Option definitions for Pokemon Emerald
 from dataclasses import dataclass
 from typing import Any
 
-from BaseClasses import PlandoOptions
+from BaseClasses import ItemClassification, PlandoOptions
 from Options import (Choice, DeathLink, DefaultOnToggle, OptionSet, NamedRange, Range, Toggle, FreeText, Visibility,
-                     PerGameCommonOptions, OptionGroup, StartInventory, OptionDict, OptionError)
+                     PerGameCommonOptions, OptionGroup, OptionCounter, StartInventory, OptionDict, OptionError)
 from worlds.AutoWorld import World
 
 from .data import data
@@ -1054,6 +1054,76 @@ class PokemonEmeraldStartInventory(StartInventory):
     """
 
 
+class FillerTrapPercentage(Range):
+    """
+    Percentage chance for each filler item to instead be a trap.
+
+    If no traps have any weight, this option does nothing.
+
+    - Faint Trap: causes your party to white out (like a received death link)
+    - Poison Trap: poisons some of your party Pokemon (see Poison Trap Party Size)
+    - Sleep Trap: puts some of your party Pokemon to sleep (see Sleep Trap Party Size)
+    """
+    display_name = "Filler Trap Percentage"
+    default = 0
+    range_start = 0
+    range_end = 100
+
+
+class TrapWeights(OptionCounter):
+    """
+    Specifies the relative weights for each type of trap.
+
+    A trap's chance of being chosen is its weight divided by the sum of all trap weights.
+    """
+    min = 0
+    max = 100
+    default = {
+        item.label: (1 if item.classification & ItemClassification.trap else 0)
+        for item in data.items.values()
+        if item.classification & ItemClassification.trap
+    }
+    valid_keys = {
+        item.label for item in data.items.values() if item.classification & ItemClassification.trap
+    }
+
+
+class PoisonTrapPartyPortion(NamedRange):
+    """
+    What portion of your party a Poison Trap afflicts, as a percentage of your CURRENT party.
+
+    The count is computed live from your party size: ceil(percent/100 * party), always at least
+    one Pokemon and never more than your party. "one" hits a single Pokemon; "half" hits half of
+    your current party (rounded up); "all" hits everyone.
+
+    Rolled once per seed; weight the values to let the generator pick the amount, e.g.
+    poison_trap_party_portion: {one: 20, half: 30, all: 50}
+    """
+    display_name = "Poison Trap Party Portion"
+    range_start = 1
+    range_end = 100
+    special_range_names = {"one": 1, "half": 50, "all": 100}
+    default = 1
+
+
+class SleepTrapPartyPortion(NamedRange):
+    """
+    What portion of your party a Sleep Trap afflicts, as a percentage of your CURRENT party.
+
+    The count is computed live from your party size: ceil(percent/100 * party), always at least
+    one Pokemon and never more than your party. "one" hits a single Pokemon; "half" hits half of
+    your current party (rounded up); "all" hits everyone.
+
+    Rolled once per seed; weight the values to let the generator pick the amount, e.g.
+    sleep_trap_party_portion: {one: 20, half: 30, all: 50}
+    """
+    display_name = "Sleep Trap Party Portion"
+    range_start = 1
+    range_end = 100
+    special_range_names = {"one": 1, "half": 50, "all": 100}
+    default = 1
+
+
 @dataclass
 class PokemonEmeraldOptions(PerGameCommonOptions):
     goal: Goal
@@ -1143,6 +1213,11 @@ class PokemonEmeraldOptions(PerGameCommonOptions):
     enable_wonder_trading: WonderTrading
     easter_egg: EasterEgg
 
+    filler_trap_percentage: FillerTrapPercentage
+    trap_weights: TrapWeights
+    poison_trap_party_portion: PoisonTrapPartyPortion
+    sleep_trap_party_portion: SleepTrapPartyPortion
+
     start_inventory: PokemonEmeraldStartInventory
 
 
@@ -1167,6 +1242,14 @@ OPTION_GROUPS = [
             TrainerPartyBlacklist,
             RandomizeLegendaryEncounters,
             RandomizeMiscPokemon,
+        ],
+    ),
+    OptionGroup(
+        "Traps", [
+            FillerTrapPercentage,
+            TrapWeights,
+            PoisonTrapPartyPortion,
+            SleepTrapPartyPortion,
         ],
     ),
 ]

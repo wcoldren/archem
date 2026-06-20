@@ -1,0 +1,70 @@
+# Faint Trap smoke test for the emerald-trap-items branch.
+#
+# Purpose: verify the client-side Faint Trap effect actually fires. The trap whites out your party
+# via the engine's existing gArchipelagoDeathLinkQueued queue, then the client advances the
+# received-items counter without granting an item.
+#
+# WHY remote_items: on
+#   The Faint Trap effect only runs when the trap arrives as a *received* item from the server
+#   (client handle_received_items -> _apply_trap). With remote_items on, even your own
+#   locally-placed items route back through the server, so picking up an in-game check delivers
+#   the trap to the client. (A LOCAL trap with remote_items off is currently inert: the ROM writes
+#   the AP sentinel so you get no bogus item, but the local location-flag watcher isn't wired yet.)
+#
+# HOW TO GENERATE
+#   Copy this file into the archem `Players/` directory (with no other player files present) and
+#   run Generate.py, or use your normal Emerald gen flow. Then connect the BizHawk client.
+#
+# WHAT TO CHECK
+#   1. Grab your first overworld item (e.g. "Route 102 - Item"). With every filler item turned into
+#      a Faint Trap, you receive a Faint Trap and white out. The client log prints "Faint Trap
+#      received!".
+#   2. Then grab a non-filler check (a badge/HM/useful item). It delivers normally -> confirms the
+#      received-items queue recovered after the trap.
+#   You can also test without walking: connect, then from the AP server console run
+#      /send FaintTrapTest Faint Trap
+#   and confirm the whiteout.
+
+name: FaintTrapTest
+description: Faint Trap smoke test (remote_items + all-filler traps)
+
+game: Pokemon Emerald Beta
+requires:
+  version: 0.6.7
+
+Pokemon Emerald Beta:
+  goal: champion
+
+  # CRITICAL: route items through the server so the client applies the trap effect.
+  remote_items: on
+
+  # Keep overworld item checks active so early pickups exist.
+  overworld_items: on
+
+  # Every filler item becomes a Faint Trap -> the first filler check whites you out.
+  filler_trap_percentage: 100
+  trap_weights:
+    Faint Trap: 1
+
+  # Standard test-seed QoL: hold A to advance text, walk past trainers.
+  turbo_a: on
+  blind_trainers: on
+
+  # Standard test-seed start inventory (lands in your PC).
+  start_inventory:
+    Hyper Potion: 99
+    Max Repel: 99
+    Ultra Ball: 99
+    Full Heal: 99
+    Nugget: 99
+
+  # --- OPTIONAL: deterministic single trap at one early check ---
+  # For a "one trap at the first check" test instead of all-filler traps:
+  #   * set filler_trap_percentage back to 0 above
+  #   * enable `plando_options: items` in your host.yaml
+  #   * uncomment the block below
+  # plando_items:
+  #   - items:
+  #       Faint Trap: 1
+  #     locations:
+  #       - "Route 102 - Item"

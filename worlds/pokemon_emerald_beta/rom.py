@@ -158,7 +158,7 @@ def write_tokens(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch
             struct.pack("<B", world.free_fly_location_id)
         )
 
-    location_info: list[tuple[int, int, str]] = []
+    location_info: list[tuple[int, int, str, bool]] = []
     for location in world.multiworld.get_locations(world.player):
         assert isinstance(location, PokemonEmeraldLocation)
 
@@ -169,19 +169,34 @@ def write_tokens(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch
 
         # Set local item values
         if not world.options.remote_items and location.item.player == world.player:
+            # Traps have no real in-game item id; write the AP sentinel so the game doesn't try to
+            # grant a bogus item. (Delivering the trap effect for a LOCAL trap requires the client to
+            # watch this location's flag; that path is not yet wired up.)
+            if "Trap" in location.item.tags:
+                local_item_value = data.constants["ITEM_ARCHIPELAGO_PROGRESSION"]
+            else:
+                local_item_value = location.item.code - BASE_OFFSET
+
             if type(location.item_address) is int:
                 patch.write_token(
                     APTokenTypes.WRITE,
                     location.item_address,
-                    struct.pack("<H", location.item.code - BASE_OFFSET)
+                    struct.pack("<H", local_item_value)
                 )
             elif type(location.item_address) is list:
                 for address in location.item_address:
                     patch.write_token(
                         APTokenTypes.WRITE,
                         address,
-                        struct.pack("<H", location.item.code - BASE_OFFSET)
+                        struct.pack("<H", local_item_value)
                     )
+
+            # Own LOCAL traps still need a name-table entry so the pickup box names the trap. The
+            # client applies the effect silently (no received-item message), so without this the game
+            # would only show the generic "found an ARCHIPELAGO ITEM" box.
+            if "Trap" in location.item.tags:
+                location_info.append(
+                    (location.address - BASE_OFFSET, location.item.player, location.item.name, True))
         else:
             if type(location.item_address) is int:
                 patch.write_token(
@@ -200,7 +215,11 @@ def write_tokens(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch
             # Creates a list of item information to store in tables later. Those tables are used to display the item and
             # player name in a text box. In the case of not enough space, the game will default to "found an ARCHIPELAGO
             # ITEM"
-            location_info.append((location.address - BASE_OFFSET, location.item.player, location.item.name))
+            # This branch can hold another world's item (multiworld), which has no `tags`; only
+            # our own items carry the "Trap" tag, so a foreign item is never a trap here.
+            location_info.append(
+                (location.address - BASE_OFFSET, location.item.player, location.item.name,
+                 "Trap" in getattr(location.item, "tags", ())))
 
     if world.options.trainersanity:
         # Duplicate entries for rival fights
@@ -218,17 +237,27 @@ def write_tokens(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch
             location_info.extend((
                 data.constants["TRAINER_FLAGS_START"] + data.constants[trainer],
                 location.item.player,
-                location.item.name
+                location.item.name,
+                "Trap" in getattr(location.item, "tags", ())
             ) for trainer in alternates)
 
     player_name_ids: dict[str, int] = {world.player_name: 0}
     item_name_offsets: dict[str, int] = {}
     next_item_name_offset = 0
-    for i, (flag, item_player, item_name) in enumerate(sorted(location_info, key=lambda t: t[0])):
-        # The player's own items are still set in the table with the value 0 to indicate the game should not show any
-        # message (the message for receiving an item will pop up when the client eventually gives it to them).
+    # The engine's pickup-message routine (RE: ROM 0x0809CB4C) suppresses the text box for any
+    # gArchipelagoNameTable entry whose player-name id is 0 — that is reserved for "own item, the
+    # client will message it". Own TRAPS get no client received-item message, so to name them we
+    # point their entry at a NON-ZERO slot holding the local player's own name; the engine then
+    # takes its "found {player}'s {item}" path. The slot is registered lazily on first own trap.
+    own_trap_name_id: "int | None" = None
+    for i, (flag, item_player, item_name, is_trap) in enumerate(sorted(location_info, key=lambda t: t[0])):
+        # The player's own items are normally set in the table with the value 0 to indicate the game should not show
+        # any message (the message for receiving an item will pop up when the client eventually gives it to them).
+        # Own TRAPS are an exception: the client applies them silently with no received-item message, so they get a
+        # real named entry here (when not racing) so the pickup box reads "found {trap}".
         # In race mode, no item location data is included, and only recieved (or own) items will show any text box.
-        if item_player == world.player or world.multiworld.is_race:
+        name_own_trap = is_trap and not world.multiworld.is_race
+        if (item_player == world.player or world.multiworld.is_race) and not name_own_trap:
             patch.write_token(
                 APTokenTypes.WRITE,
                 data.rom_addresses["gArchipelagoNameTable"] + (i * 5) + 0,
@@ -245,20 +274,41 @@ def write_tokens(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch
                 struct.pack("<B", 0)
             )
         else:
-            player_name = world.multiworld.get_player_name(item_player)
+            # Own traps (this branch is only reached for them via name_own_trap) must point at a
+            # non-zero player-name slot or the engine suppresses the box. Register the local player's
+            # own name at a fresh slot once, then reuse it; other players' items register their own.
+            if item_player == world.player:
+                if own_trap_name_id is None:
+                    # Only space for 250 player names; bail to the suppressed path if exhausted.
+                    if len(player_name_ids) >= 250:
+                        continue
+                    own_trap_name_id = len(player_name_ids)
+                    # Synthetic key: occupies the slot for id allocation without colliding with a
+                    # real player literally named the same (own-name is already keyed at id 0).
+                    player_name_ids[f"\x00own\x00{world.player_name}"] = own_trap_name_id
+                    for j, b in enumerate(encode_string(world.player_name, 17)):
+                        patch.write_token(
+                            APTokenTypes.WRITE,
+                            data.rom_addresses["gArchipelagoPlayerNames"] + (own_trap_name_id * 17) + j,
+                            struct.pack("<B", b)
+                        )
+                player_name_id = own_trap_name_id
+            else:
+                player_name = world.multiworld.get_player_name(item_player)
 
-            if player_name not in player_name_ids:
-                # Only space for 250 player names
-                if len(player_name_ids) >= 250:
-                    continue
+                if player_name not in player_name_ids:
+                    # Only space for 250 player names
+                    if len(player_name_ids) >= 250:
+                        continue
 
-                player_name_ids[player_name] = len(player_name_ids)
-                for j, b in enumerate(encode_string(player_name, 17)):
-                    patch.write_token(
-                        APTokenTypes.WRITE,
-                        data.rom_addresses["gArchipelagoPlayerNames"] + (player_name_ids[player_name] * 17) + j,
-                        struct.pack("<B", b)
-                    )
+                    player_name_ids[player_name] = len(player_name_ids)
+                    for j, b in enumerate(encode_string(player_name, 17)):
+                        patch.write_token(
+                            APTokenTypes.WRITE,
+                            data.rom_addresses["gArchipelagoPlayerNames"] + (player_name_ids[player_name] * 17) + j,
+                            struct.pack("<B", b)
+                        )
+                player_name_id = player_name_ids[player_name]
 
             if item_name not in item_name_offsets:
                 if len(item_name) > 35:
@@ -290,7 +340,7 @@ def write_tokens(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch
             patch.write_token(
                 APTokenTypes.WRITE,
                 data.rom_addresses["gArchipelagoNameTable"] + (i * 5) + 4,
-                struct.pack("<B", player_name_ids[player_name])
+                struct.pack("<B", player_name_id)
             )
 
     easter_egg = get_easter_egg(world.options.easter_egg.value)

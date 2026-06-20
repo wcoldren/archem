@@ -5,6 +5,7 @@ import copy
 import orjson
 import random
 import time
+from math import ceil
 from typing import TYPE_CHECKING
 import uuid
 
@@ -13,6 +14,8 @@ from Options import Toggle
 import Utils
 import worlds._bizhawk as bizhawk
 from worlds._bizhawk.client import BizHawkClient
+
+from BaseClasses import ItemClassification
 
 from .data import GAME_NAME, BASE_OFFSET, POKEDEX_OFFSET, data
 from .options import Goal, RemoteItems
@@ -25,6 +28,19 @@ if TYPE_CHECKING:
 DEFEATED_WALLACE_FLAG = data.constants["TRAINER_FLAGS_START"] + data.constants["TRAINER_WALLACE"]
 DEFEATED_STEVEN_FLAG = data.constants["TRAINER_FLAGS_START"] + data.constants["TRAINER_STEVEN"]
 DEFEATED_NORMAN_FLAG = data.constants["TRAINER_FLAGS_START"] + data.constants["TRAINER_NORMAN_1"]
+
+# struct Pokemon layout (canonical pokeemerald, stable across the AP fork since it's a battle/runtime
+# IWRAM structure, not a relocated save field). Each party slot is 100 bytes. `personality` (u32) at
+# offset 0 is plaintext and nonzero only for occupied slots. `status` (status1, u32) at offset 0x50
+# sits outside the encrypted box substructs (0x00-0x4F), so it can be written directly.
+POKEMON_STRIDE = 100
+POKEMON_PERSONALITY_OFFSET = 0
+POKEMON_STATUS1_OFFSET = 0x50
+PARTY_SIZE = 6
+# STATUS1 bitfield values. Poison ticks in the overworld; sleep is a 1-7 turn counter in bits 0-2
+# (felt in the next battle).
+STATUS1_POISON = 0x08
+STATUS1_SLEEP_TURNS = 0x03
 
 # These flags are communicated to the tracker as a bitfield using this order.
 # Modifying the order will cause undetectable autotracking issues.
@@ -130,6 +146,8 @@ class PokemonEmeraldClient(BizHawkClient):
     patch_suffix = ".apemeraldbeta"
 
     local_checked_locations: set[int]
+    applied_trap_locations: set[int]
+    _trap_history_synced: bool
     local_set_events: dict[str, bool]
     local_found_key_items: dict[str, bool]
     local_defeated_legendaries: dict[str, bool]
@@ -150,6 +168,8 @@ class PokemonEmeraldClient(BizHawkClient):
 
     def initialize_client(self):
         self.local_checked_locations = set()
+        self.applied_trap_locations = set()
+        self._trap_history_synced = False
         self.local_set_events = {}
         self.local_found_key_items = {}
         self.local_defeated_legendaries = {}
@@ -296,6 +316,18 @@ class PokemonEmeraldClient(BizHawkClient):
             defeated_legendaries = {legendary_name: False for legendary_name in LEGENDARY_NAMES.values()}
             caught_legendaries = {legendary_name: False for legendary_name in LEGENDARY_NAMES.values()}
 
+            # Local traps (remote_items off): the world exports flag_id -> trap label for our own
+            # trap locations. Apply each once when its flag is seen set. JSON keys arrive as strings.
+            trap_map = {int(k): v for k, v in ctx.slot_data.get("trap_locations", {}).items()}
+            if trap_map and not self._trap_history_synced:
+                # Seed already-checked trap locations as applied WITHOUT firing them, so reconnecting
+                # doesn't re-whiteout for every trap already triggered. slot_data and checked_locations
+                # arrive together on Connect, so checked_locations is populated by now.
+                for loc_id in ctx.checked_locations:
+                    if (loc_id - BASE_OFFSET) in trap_map:
+                        self.applied_trap_locations.add(loc_id - BASE_OFFSET)
+                self._trap_history_synced = True
+
             # Check set flags
             for byte_i, byte in enumerate(flag_bytes):
                 for i in range(8):
@@ -320,6 +352,12 @@ class PokemonEmeraldClient(BizHawkClient):
 
                         if flag_id in KEY_LOCATION_FLAG_MAP:
                             local_found_key_items[KEY_LOCATION_FLAG_MAP[flag_id]] = True
+
+                        if flag_id in trap_map and flag_id not in self.applied_trap_locations:
+                            label = trap_map[flag_id]
+                            item_data = next(d for d in data.items.values() if d.label == label)
+                            if await self._apply_trap(ctx, item_data, guards):
+                                self.applied_trap_locations.add(flag_id)
 
             # Check pokedex
             if ctx.slot_data["dexsanity"] == Toggle.option_true:
@@ -543,6 +581,21 @@ class PokemonEmeraldClient(BizHawkClient):
         # fill it with the next item
         if num_received_items < len(ctx.items_received) and received_item_is_empty:
             next_item = ctx.items_received[num_received_items]
+            item_id = next_item.item - BASE_OFFSET
+            item_data = data.items.get(item_id)
+
+            # Traps have no in-game item id and are applied client-side. Apply the effect and advance
+            # the received-items counter directly, without putting an item in the received-item struct.
+            if item_data is not None and item_data.classification & ItemClassification.trap:
+                applied = await self._apply_trap(ctx, item_data, guards)
+                if applied:
+                    await bizhawk.guarded_write(
+                        ctx.bizhawk_ctx,
+                        [(sb1_address + 0x3778, (num_received_items + 1).to_bytes(2, "little"), "System Bus")],
+                        [guards["IN OVERWORLD"], guards["SAVE BLOCK 1"]]
+                    )
+                return
+
             should_display = 1 if next_item.flags & 1 or next_item.player == ctx.slot else 0
             await bizhawk.write(ctx.bizhawk_ctx, [
                 (received_item_address + 0, (next_item.item - BASE_OFFSET).to_bytes(2, "little"), "System Bus"),
@@ -550,6 +603,83 @@ class PokemonEmeraldClient(BizHawkClient):
                 (received_item_address + 4, [1], "System Bus"),
                 (received_item_address + 5, [should_display], "System Bus"),
             ])
+
+    async def _apply_trap(self, ctx: BizHawkClientContext, item_data,
+                          guards: dict[str, tuple[int, bytes, str]]) -> bool:
+        """
+        Apply a trap's effect client-side. Returns True if the effect was applied (so the caller can
+        advance the received-items counter). Each trap label maps to one effect.
+        """
+        from CommonClient import logger
+
+        if item_data.label == "Faint Trap":
+            # Reuse the engine's death-link whiteout queue: the next safe moment, the party whites out.
+            success = await bizhawk.guarded_write(
+                ctx.bizhawk_ctx,
+                [(data.ram_addresses["gArchipelagoDeathLinkQueued"], [1], "System Bus")],
+                [guards["IN OVERWORLD"], guards["SAVE BLOCK 1"]]
+            )
+            if success:
+                logger.info("Faint Trap received!")
+            return success
+
+        if item_data.label == "Poison Trap":
+            percent = ctx.slot_data.get("poison_trap_party_portion", 1)
+            success = await self._afflict_party_status(ctx, guards, STATUS1_POISON, percent)
+            if success:
+                logger.info("Poison Trap received!")
+            return success
+
+        if item_data.label == "Sleep Trap":
+            percent = ctx.slot_data.get("sleep_trap_party_portion", 1)
+            success = await self._afflict_party_status(ctx, guards, STATUS1_SLEEP_TURNS, percent)
+            if success:
+                logger.info("Sleep Trap received!")
+            return success
+
+        # Unknown trap type: advance past it rather than blocking the item queue forever.
+        logger.warning(f"Received unhandled trap '{item_data.label}'; skipping.")
+        return True
+
+    async def _afflict_party_status(self, ctx: BizHawkClientContext,
+                                    guards: dict[str, tuple[int, bytes, str]],
+                                    status1: int, percent: int) -> bool:
+        """
+        Write a status1 condition to the leading occupied party slots. The number afflicted is a
+        portion of the CURRENT party: ceil(percent/100 * party), always at least one and never
+        more than the party. Returns True if the write was applied. The player is in the overworld
+        here (the read is overworld-guarded), so party RAM is stable.
+        """
+        party_address = data.ram_addresses["gPlayerParty"]
+        read_result = await bizhawk.guarded_read(
+            ctx.bizhawk_ctx,
+            [(party_address, POKEMON_STRIDE * PARTY_SIZE, "System Bus")],
+            [guards["IN OVERWORLD"]]
+        )
+        if read_result is None:  # Not in overworld
+            return False
+        party_bytes = read_result[0]
+
+        # Occupied slots have a nonzero personality (plaintext, offset 0).
+        occupied = [
+            i for i in range(PARTY_SIZE)
+            if int.from_bytes(
+                party_bytes[i * POKEMON_STRIDE + POKEMON_PERSONALITY_OFFSET:
+                            i * POKEMON_STRIDE + POKEMON_PERSONALITY_OFFSET + 4], "little") != 0
+        ]
+        if not occupied:
+            return True  # Empty party (nothing to afflict); don't block the item queue.
+
+        # Round up so any nonzero portion hits at least one mon; cap at the actual party.
+        count = max(1, min(len(occupied), ceil(percent / 100 * len(occupied))))
+        targets = occupied[:count]
+
+        writes = [
+            (party_address + i * POKEMON_STRIDE + POKEMON_STATUS1_OFFSET,
+             status1.to_bytes(4, "little"), "System Bus")
+            for i in targets
+        ]
+        return await bizhawk.guarded_write(ctx.bizhawk_ctx, writes, [guards["IN OVERWORLD"]])
 
     async def handle_wonder_trade(self, ctx: BizHawkClientContext, guards: dict[str, tuple[int, bytes, str]]) -> None:
         """

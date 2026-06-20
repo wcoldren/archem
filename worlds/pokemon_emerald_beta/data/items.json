@@ -1777,5 +1777,23 @@
     "classification": "USEFUL",
     "tags": ["TM"],
     "modern_id": 377
+  },
+  "FAINT_TRAP": {
+    "label": "Faint Trap",
+    "classification": "TRAP",
+    "tags": ["Trap"],
+    "modern_id": null
+  },
+  "POISON_TRAP": {
+    "label": "Poison Trap",
+    "classification": "TRAP",
+    "tags": ["Trap"],
+    "modern_id": null
+  },
+  "SLEEP_TRAP": {
+    "label": "Sleep Trap",
+    "classification": "TRAP",
+    "tags": ["Trap"],
+    "modern_id": null
   }
 }
