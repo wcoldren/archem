@@ -645,10 +645,11 @@ class PokemonEmeraldClient(BizHawkClient):
                                     guards: dict[str, tuple[int, bytes, str]],
                                     status1: int, percent: int) -> bool:
         """
-        Write a status1 condition to the leading occupied party slots. The number afflicted is a
-        portion of the CURRENT party: ceil(percent/100 * party), always at least one and never
-        more than the party. Returns True if the write was applied. The player is in the overworld
-        here (the read is overworld-guarded), so party RAM is stable.
+        Write a status1 condition to a random subset of occupied party slots. The number afflicted
+        is a portion of the CURRENT party: ceil(percent/100 * party), always at least one and never
+        more than the party; the specific slots are chosen at random, so some Pokemon are spared.
+        Returns True if the write was applied. The player is in the overworld here (the read is
+        overworld-guarded), so party RAM is stable.
         """
         party_address = data.ram_addresses["gPlayerParty"]
         read_result = await bizhawk.guarded_read(
@@ -672,7 +673,8 @@ class PokemonEmeraldClient(BizHawkClient):
 
         # Round up so any nonzero portion hits at least one mon; cap at the actual party.
         count = max(1, min(len(occupied), ceil(percent / 100 * len(occupied))))
-        targets = occupied[:count]
+        # Pick the afflicted slots at random (count is already clamped to [1, len(occupied)]).
+        targets = random.sample(occupied, count)
 
         writes = [
             (party_address + i * POKEMON_STRIDE + POKEMON_STATUS1_OFFSET,
