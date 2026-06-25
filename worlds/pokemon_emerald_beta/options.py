@@ -154,6 +154,17 @@ class Trainersanity(Toggle):
     display_name = "Trainersanity"
 
 
+class Townsanity(Toggle):
+    """
+    Arriving at a town or city for the first time gives you an item.
+
+    Adds 16 locations (one per town/city), checked the moment you set foot in a new town. Each adds a valuable item (Nugget) to the pool.
+
+    Note: town rewards are delivered over the network, so this is only effective with Remote Items enabled.
+    """
+    display_name = "Townsanity"
+
+
 class ItemPoolType(Choice):
     """
     Determines which non-progression items get put into the item pool.
@@ -1141,6 +1152,7 @@ class PokemonEmeraldOptions(PerGameCommonOptions):
     dexsanity: Dexsanity
     dexsanity_encounter_types: DexsanityEncounterTypes
     trainersanity: Trainersanity
+    townsanity: Townsanity
     item_pool_type: ItemPoolType
 
     require_itemfinder: HiddenItemsRequireItemfinder

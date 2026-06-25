@@ -136,6 +136,31 @@ class LocationCategory(IntEnum):
     BERRY_TREE = 9
     TRAINER = 10
     POKEDEX = 11
+    TOWN = 12
+
+
+# Townsanity: each town/city's FLAG_VISITED_* flag (set by the game on first arrival) is mapped to a
+# synthetic AP location placed in the region the player reaches when first entering that town. Most
+# towns expose a "/MAIN" region; Sootopolis (entered by surfacing from underwater) and Ever Grande
+# (entered by surfing in from Route 128) have no "/MAIN", so their arrival hub region is used instead.
+TOWN_FLAG_TO_REGION: dict[str, str] = {
+    "FLAG_VISITED_LITTLEROOT_TOWN": "REGION_LITTLEROOT_TOWN/MAIN",
+    "FLAG_VISITED_OLDALE_TOWN": "REGION_OLDALE_TOWN/MAIN",
+    "FLAG_VISITED_DEWFORD_TOWN": "REGION_DEWFORD_TOWN/MAIN",
+    "FLAG_VISITED_LAVARIDGE_TOWN": "REGION_LAVARIDGE_TOWN/MAIN",
+    "FLAG_VISITED_FALLARBOR_TOWN": "REGION_FALLARBOR_TOWN/MAIN",
+    "FLAG_VISITED_VERDANTURF_TOWN": "REGION_VERDANTURF_TOWN/MAIN",
+    "FLAG_VISITED_PACIFIDLOG_TOWN": "REGION_PACIFIDLOG_TOWN/MAIN",
+    "FLAG_VISITED_PETALBURG_CITY": "REGION_PETALBURG_CITY/MAIN",
+    "FLAG_VISITED_SLATEPORT_CITY": "REGION_SLATEPORT_CITY/MAIN",
+    "FLAG_VISITED_MAUVILLE_CITY": "REGION_MAUVILLE_CITY/MAIN",
+    "FLAG_VISITED_RUSTBORO_CITY": "REGION_RUSTBORO_CITY/MAIN",
+    "FLAG_VISITED_FORTREE_CITY": "REGION_FORTREE_CITY/MAIN",
+    "FLAG_VISITED_LILYCOVE_CITY": "REGION_LILYCOVE_CITY/MAIN",
+    "FLAG_VISITED_MOSSDEEP_CITY": "REGION_MOSSDEEP_CITY/MAIN",
+    "FLAG_VISITED_SOOTOPOLIS_CITY": "REGION_SOOTOPOLIS_CITY/WATER",
+    "FLAG_VISITED_EVER_GRANDE_CITY": "REGION_EVER_GRANDE_CITY/SEA",
+}
 
 
 class LocationData(NamedTuple):
@@ -143,7 +168,7 @@ class LocationData(NamedTuple):
     label: str
     parent_region: str
     default_item: int
-    address: int | list[int]
+    address: int | list[int] | None
     flag: int
     category: LocationCategory
     tags: frozenset[str]
@@ -533,6 +558,28 @@ def _init() -> None:
         new_region.warps.sort()
 
         data.regions[region_name] = new_region
+
+    # Townsanity: synthesize a location per town from its FLAG_VISITED_* constant. These flags live in
+    # extracted_data["constants"] (not ["locations"]), and the game already sets them on first arrival,
+    # so no engine/client change is needed -- the client's generic flag loop reports any location whose
+    # id is flag + BASE_OFFSET. The reward has no in-game item slot (address=None), so it is delivered
+    # over the network and is only effective with remote_items enabled.
+    for flag_name, region_name in TOWN_FLAG_TO_REGION.items():
+        assert region_name in data.regions, f"Townsanity region [{region_name}] for [{flag_name}] not found"
+        town_label = flag_name[len("FLAG_VISITED_"):].replace("_", " ").title()
+        location_name = "TOWNSANITY_" + flag_name[len("FLAG_VISITED_"):]
+        data.locations[location_name] = LocationData(
+            location_name,
+            f"{town_label} - Visited",
+            region_name,
+            data.constants["ITEM_NUGGET"],
+            None,
+            data.constants[flag_name],
+            LocationCategory.TOWN,
+            frozenset(),
+        )
+        data.regions[region_name].locations.append(location_name)
+        data.regions[region_name].locations.sort()
 
     # Create item data
     items_json = load_json_data("items.json")

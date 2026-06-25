@@ -623,6 +623,7 @@ _LOCATION_CATEGORY_TO_GROUP_NAME = {
     LocationCategory.BERRY_TREE: "Berry Trees",
     LocationCategory.TRAINER: "Trainers",
     LocationCategory.POKEDEX: "Pokedex",
+    LocationCategory.TOWN: "Towns",
 }
 
 LOCATION_GROUPS: dict[str, set[str]] = {group_name: set() for group_name in _LOCATION_CATEGORY_TO_GROUP_NAME.values()}
