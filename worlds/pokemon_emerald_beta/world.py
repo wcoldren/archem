@@ -338,6 +338,8 @@ class PokemonEmeraldWorld(World):
             categories.add(LocationCategory.POKEDEX)
         if self.options.trainersanity:
             categories.add(LocationCategory.TRAINER)
+        if self.options.townsanity:
+            categories.add(LocationCategory.TOWN)
         create_locations_by_category(self, all_regions, categories)
 
         self.multiworld.regions.extend(all_regions.values())
@@ -793,6 +795,7 @@ class PokemonEmeraldWorld(World):
             "remote_items",
             "dexsanity",
             "trainersanity",
+            "townsanity",
             "modify_118",
             "death_link",
             "normalize_encounter_rates",
