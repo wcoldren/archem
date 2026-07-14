@@ -1,3 +1,5 @@
+from Options import OptionError
+
 from . import PokemonEmeraldTestBase
 from ..data import BASE_OFFSET, LocationCategory, data
 
@@ -52,3 +54,16 @@ class TestTownsanityLocations(PokemonEmeraldTestBase):
         distribute_items_restrictive(self.multiworld)
         for loc in _town_locations(self.multiworld):
             self.assertIsNotNone(loc.item, f"no item placed at {loc.name}")
+
+
+class TestTownsanityRequiresRemoteItems(PokemonEmeraldTestBase):
+    # auto_construct = False so world_setup (which runs generate_early) fires inside the
+    # assertion rather than during setUp, where the raise would error the test instead of passing.
+    auto_construct = False
+    options = {
+        "townsanity": "true",
+        "remote_items": "false",
+    }
+
+    def test_guard_raises(self) -> None:
+        self.assertRaises(OptionError, lambda: self.world_setup())

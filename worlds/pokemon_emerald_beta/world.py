@@ -246,6 +246,14 @@ class PokemonEmeraldWorld(World):
                             self.player, self.player_name)
             self.options.remote_items.value = Toggle.option_true
 
+        # Townsanity rewards are delivered over the network (no in-game item slot), so without
+        # remote items an own-progression item at a town check has no way to reach the player.
+        # Checked after the race-mode force-enable above so race mode satisfies the requirement.
+        if self.options.townsanity and not self.options.remote_items:
+            raise OptionError(f"Pokemon Emerald: Player {self.player} ({self.player_name}) cannot "
+                              "enable Townsanity without Remote Items; town rewards are delivered "
+                              "over the network and would be unreachable otherwise.")
+
         if self.options.goal == Goal.option_legendary_hunt:
             # Prevent turning off all legendary encounters
             if len(self.options.allowed_legendary_hunt_encounters.value) == 0:
