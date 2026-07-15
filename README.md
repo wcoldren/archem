@@ -1,3 +1,12 @@
+> **Note:** This is a personal experimental fork of
+> [Zunawe's Pokémon Emerald Archipelago world](https://github.com/Zunawe/Archipelago)
+> that I use for learning and tinkering — HM logic changes, trap items, level
+> scaling, town-check experiments, and some engine-level modifications. It's not
+> the official version, it's not stable, and seeds generated from it aren't
+> supported anywhere. If you want to actually play Pokémon Emerald in
+> Archipelago, use the official world. All credit for the underlying
+> implementation goes to Zunawe and the Archipelago contributors.
+
 # [Archipelago](https://archipelago.gg) ![Discord Shield](https://discordapp.com/api/guilds/731205301247803413/widget.png?style=shield) | [Install](https://github.com/ArchipelagoMW/Archipelago/releases)
 
 Archipelago provides a generic framework for developing multiworld capability for game randomizers. In all cases,
