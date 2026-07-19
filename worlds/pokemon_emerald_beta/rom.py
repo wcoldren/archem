@@ -314,7 +314,7 @@ def write_tokens(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch
                 if len(item_name) > 35:
                     item_name = item_name[:34] + "…"
 
-                # Only 36 * 250 bytes for item names
+                # Only 36 * 500 bytes for item names
                 if next_item_name_offset + len(item_name) + 1 > 36 * 500:
                     continue
 
