@@ -1,20 +1,27 @@
-# Claude instructions for the archem Emerald fork
+# archem — Pokémon Emerald AP world (Python) + AP tooling
 
-This is `wcoldren/archem`, a personal experimental fork of the Pokémon Emerald
-Archipelago world. It is developed as part of Bill's `~/repos/AP` workspace (this
-repo is vendored there under `vendor/archem`); the workspace `CLAUDE.md` and the
-per-game docs under `games/emerald/` hold the broader context.
+Descends from Zunawe's emerald-dev fork of ArchipelagoMW/Archipelago.
+`trunk` is the integration trunk (GitHub default). Keeper branches: main,
+emerald-hm-no-badges, 3 level-spheres variants. Do NOT force-push keepers.
 
-## Merge and milestone review gate
+## Working style (IMPORTANT)
+- Learning-first + piecemeal: explain before editing, one step at a time,
+  wait for results before the next step. Use prediction-then-verify.
 
-- Before any merge into `trunk` (archem) or `local-test`, and before each M1/M2
-  milestone commit on AP `main`, run `/code-review` in a **fresh-context session**
-  on the diff. Findings must be addressed or explicitly waived in the commit
-  message (say which finding and why).
-- Engine struct-layout changes — `ArchipelagoOptions` and anything `rom.py` reads
-  by offset — **always** get the fresh-context review, even when the tests pass. A
-  silent offset mistake corrupts `rom.py`'s read assumptions without failing any
-  test, so a green suite is not sufficient cover for these.
-- Bill drives key engine commits himself. Claude Code prepares, verifies, and
-  stages those, then **stops before committing** — it does not commit engine
-  struct-layout changes on Bill's behalf.
+## Test & verify
+- Full Emerald suite: 181 tests must stay green. Run the emerald tests only
+  (not the whole AP suite) for speed. Report pass/fail counts explicitly.
+- If a test fails, weigh equally: bug in world code, bug in test, or a stale
+  `extracted_data.json` from an engine rebuild.
+
+## Footguns
+- rom.py depends on byte offsets from `extracted_data.json`, which is generated
+  from the emerald-archipelago engine (source + linker map + binary via
+  tools/extractor). If engine structs change, offsets must be regenerated or
+  rom.py patches the wrong bytes. Treat extracted_data.json as generated, not hand-edited.
+- Data heavyweights (ROMs, decomp clones) are gitignored and excluded from the
+  Claude.ai project sync. Do not add them.
+- townsanity requires the remote_items guard; keep it.
+
+## Repo etiquette
+- Small, logically-scoped commits with descriptive messages. Explain the WHY.
