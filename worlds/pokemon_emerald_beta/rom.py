@@ -241,6 +241,19 @@ def write_tokens(world: PokemonEmeraldWorld, patch: PokemonEmeraldProcedurePatch
                 "Trap" in getattr(location.item, "tags", ())
             ) for trainer in alternates)
 
+    # gArchipelagoNameTable holds NAME_TABLE_BUFFER_SIZE / 5 = 7500 / 5 = 1500 five-byte
+    # entries (include/archipelago.h). The writer loop below indexes the array by
+    # enumerate() position over location_info, and the engine reader (scrcmd.c) does no
+    # bounds check, so more entries than capacity would silently corrupt adjacent ROM.
+    NAME_TABLE_MAX_ENTRIES = 1500
+    if len(location_info) > NAME_TABLE_MAX_ENTRIES:
+        raise AssertionError(
+            f"gArchipelagoNameTable overflow: {len(location_info)} entries exceeds "
+            f"capacity {NAME_TABLE_MAX_ENTRIES} (NAME_TABLE_BUFFER_SIZE / 5). "
+            f"Disable one of townsanity/trainersanity/dexsanity, or grow "
+            f"NAME_TABLE_BUFFER_SIZE in the engine and regenerate extracted_data.json."
+        )
+
     player_name_ids: dict[str, int] = {world.player_name: 0}
     item_name_offsets: dict[str, int] = {}
     next_item_name_offset = 0
